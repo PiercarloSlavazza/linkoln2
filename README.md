@@ -17,10 +17,10 @@ Features:
 
 
 Input:
-*  Either a fragment of text or an entire document written in Italian, in plain text format or in an annotated format (HTML, XML-like...).
+*  Either a fragment of text or an entire document written in Italian, in plain-text format or in an annotated format (HTML, XML-like...).
 
 
 Outputs:
 *  A collection of every legal reference found in the input;
-*  the original text or document annotated with the <a> tag in correspondence of the identified citations.
+*  the original text or document annotated with hypertextual links in correspondence of the identified citations.
 
