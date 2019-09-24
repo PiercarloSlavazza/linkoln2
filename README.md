@@ -1,3 +1,5 @@
+(./linkoln-logo.png)
+
 # Linkoln
 
 A software developed at IGSG-CNR for the automatic detection and linking of legal references contained in legal texts written in Italian.
