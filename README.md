@@ -13,7 +13,7 @@
 *  identification of CJEU, ECHR and EPO case-laws;
 *  identification of legacy authorities and types of document for both legislative and case-law references;
 *  generation of standard identifiers for the cited documents (URN-NIR, CELEX, ELI, ECLI);
-*  generation of URLs for accessing the cited documents;
+*  generation of URLs for accessing the cited documents.
 
 ### Input
 *  Either a fragment of text or an entire document written in Italian, in plain-text format or in an annotated format (HTML, XML).
