@@ -1,4 +1,4 @@
-[./linkoln-logo.png]
+![alt text](./linkoln-logo.png)
 
 # Linkoln
 
