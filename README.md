@@ -17,7 +17,7 @@ Features:
 
 
 Input:
-*  Either a fragment of text or an entire document written in Italian, in plain-text format or in an annotated format (HTML, XML-like...).
+*  Either a fragment of text or an entire document written in Italian, in plain-text format or in an annotated format (HTML, XML).
 
 
 Outputs:
