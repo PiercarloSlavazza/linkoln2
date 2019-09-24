@@ -1,4 +1,4 @@
-[[./linkoln-logo.png|alt=octocat]]
+[./linkoln-logo.png]
 
 # Linkoln
 
