@@ -1,6 +1,6 @@
 ![alt text](./linkoln-logo.png)
 
-**Linkoln** is a software developed at IGSG-CNR (Istituto di Informatica Giuridica e Sistemi Giudiziari del Consiglio Nazionale delle Ricerche) for the automatic detection and linking of legal references contained in legal texts written in Italian.
+**Linkoln** is a software developed at IGSG-CNR (*Istituto di Informatica Giuridica e Sistemi Giudiziari* del *Consiglio Nazionale delle Ricerche*) for the automatic detection and linking of legal references contained in legal texts written in Italian.
 
 
 ### Features
