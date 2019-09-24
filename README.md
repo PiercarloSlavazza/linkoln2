@@ -3,7 +3,7 @@
 **Linkoln** is a software developed at IGSG-CNR for the automatic detection and linking of legal references contained in legal texts written in Italian.
 
 
-##Features:
+## Features:
 *  identification of legislative references;
 *  identification of case-law references;
 *  identification of legislative aliases;
@@ -15,7 +15,7 @@
 *  generation of standard identifiers for the cited documents (URN-NIR, CELEX, ELI, ECLI);
 *  generation of URLs for accessing the cited documents;
 
-#Input:
+# Input:
 *  Either a fragment of text or an entire document written in Italian, in plain-text format or in an annotated format (HTML, XML).
 
 ###Outputs:
