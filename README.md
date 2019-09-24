@@ -1,4 +1,4 @@
-(./linkoln-logo.png)
+[Contribution guidelines for this project](./linkoln-logo.png)
 
 # Linkoln
 
