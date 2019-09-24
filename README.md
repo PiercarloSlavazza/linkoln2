@@ -21,6 +21,6 @@ Input:
 
 
 Outputs:
-*  A collection of every legal reference found in the input;
+*  A collection of all the legal references found in the input;
 *  the original text or document annotated with hypertextual links in correspondence of the identified citations.
 
