@@ -30,23 +30,24 @@
 			
 		String text = "vedi lett. e), comma 2, art. 2 del decreto del Ministero delle finanze del 25 novembre 1998, n. 418";
 
-		LinkolnDocument linkolnDocument = LinkolnDocumentFactory.getDocument("");
-		linkolnDocument.setText(text);
-
-		Linkoln.run(linkolnDocument);
+		LinkolnDocument linkolnDocument = Linkoln.run(text);
 		
 		if( !linkolnDocument.hasFailed()) {
 			
-			System.out.println("\nReferences found:\n");
+			System.out.println("\nList of identified legal references:");
 			
 			int count = 0;
+			
 			for(AnnotationEntity entity : linkolnDocument.getAnnotationEntities()) {
 				
 				if(entity instanceof Reference) {
+					
 					System.out.println("\n" + count + ") " + entity.getClass().getSimpleName() + "\n" + ((Reference) entity));
 					count++;
 				}
 			}
-		}
+			
+			System.out.println("\n\nOriginal text with hyperlinks:\n\n" + linkolnDocument.getFinalHtml());
+		}	
 	}
 ```

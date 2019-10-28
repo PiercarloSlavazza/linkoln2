@@ -36,9 +36,7 @@ public class Linkoln {
 	public static boolean FORCE_EXIT_AFTER_SERVICE_FAILURE = true;
 	
 	
-	public static String run(String text) {
-		
-		String output = text;
+	public static LinkolnDocument run(String text) {
 		
 		LinkolnDocument linkolnDocument = LinkolnDocumentFactory.getDocument("");
 		
@@ -51,11 +49,9 @@ public class Linkoln {
 		if( !linkolnDocument.hasFailed()) {
 			
 			linkolnDocument.htmlPostProcessing();
-			
-			output = linkolnDocument.getFinalHtml();
 		}
 		
-		return output;
+		return linkolnDocument;
 	}
 	
 	public static void run(LinkolnDocument linkolnDocument) {
