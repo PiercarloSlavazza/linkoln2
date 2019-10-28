@@ -29,7 +29,7 @@ public class Linkoln {
 	
 	public static boolean DEBUG = false;	
 	public static boolean DEBUG_HTML = false;
-	public static boolean LOAD_MUNICIPALITIES = true;
+	public static boolean LOAD_MUNICIPALITIES = false;
 	
 	public static boolean HTML_TARGET_BLANK = true;
 	
