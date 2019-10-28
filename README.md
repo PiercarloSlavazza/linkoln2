@@ -36,14 +36,11 @@
 			
 			System.out.println("\nList of identified legal references:");
 			
-			int count = 0;
-			
 			for(AnnotationEntity entity : linkolnDocument.getAnnotationEntities()) {
 				
 				if(entity instanceof Reference) {
 					
-					System.out.println("\n" + count + ") " + entity.getClass().getSimpleName() + "\n" + ((Reference) entity));
-					count++;
+					System.out.println("\n" + entity.getClass().getSimpleName() + " found: \n" + ((Reference) entity));
 				}
 			}
 			
