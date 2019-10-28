@@ -1,17 +1,3 @@
-#-------------------------------------------------------------------------------
-# Copyright (c) 2016-2021 Institute of Legal Information and Judicial Systems IGSG-CNR (formerly ITTIG-CNR)
-# 
-# This program and the accompanying materials  are made available under the terms of the GNU General Public
-# License as published by the Free Software Foundation; either version 3 of the License, or (at your option)
-# any later version. 
-# You may not use this work except in compliance with the Licence.
-# You may obtain a copy of the Licence at: https://www.gnu.org/licenses/gpl-3.0.txt
-# Unless required by applicable law or agreed to in writing, software distributed under the Licence is 
-# distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the Licence for the specific language governing permissions and limitations under the Licence.
-#  
-# Authors: Lorenzo Bacci (IGSG-CNR)
-#-------------------------------------------------------------------------------
 ![alt text](./linkoln-logo.png)
 
 **Linkoln** is a software developed at IGSG-CNR (*Istituto di Informatica Giuridica e Sistemi Giudiziari* del *Consiglio Nazionale delle Ricerche*) for the automatic detection and linking of legal references contained in legal texts written in Italian.
@@ -36,3 +22,31 @@
 *  A collection of all the legal references found in the input;
 *  the original text or document annotated with hypertextual links in correspondence of the identified citations.
 
+### Testing the library
+
+```java
+	
+	public static void main(String[] args) {
+			
+		String text = "vedi lett. e), comma 2, art. 2 del decreto del Ministero delle finanze del 25 novembre 1998, n. 418";
+
+		LinkolnDocument linkolnDocument = LinkolnDocumentFactory.getDocument("");
+		linkolnDocument.setText(text);
+
+		Linkoln.run(linkolnDocument);
+		
+		if( !linkolnDocument.hasFailed()) {
+			
+			System.out.println("\nReferences found:\n");
+			
+			int count = 0;
+			for(AnnotationEntity entity : linkolnDocument.getAnnotationEntities()) {
+				
+				if(entity instanceof Reference) {
+					System.out.println("\n" + count + ") " + entity.getClass().getSimpleName() + "\n" + ((Reference) entity));
+					count++;
+				}
+			}
+		}
+	}
+```
