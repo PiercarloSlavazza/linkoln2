@@ -1,26 +1,25 @@
-/********************************************************************************************************
-Copyright (c) 2016-2021 Institute of Legal Information and Judicial Systems IGSG-CNR (formerly ITTIG-CNR)
-
-This program and the accompanying materials  are made available under the terms of the GNU General Public
-License as published by the Free Software Foundation; either version 3 of the License, or (at your option)
-any later version. 
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at: https://www.gnu.org/licenses/gpl-3.0.txt
-Unless required by applicable law or agreed to in writing, software distributed under the Licence is 
-distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the Licence for the specific language governing permissions and limitations under the Licence.
- 
-Authors: Lorenzo Bacci (IGSG-CNR)
-********************************************************************************************************/
-
+/*******************************************************************************
+ * Copyright (c) 2016-2021 Institute of Legal Information and Judicial Systems IGSG-CNR (formerly ITTIG-CNR)
+ * 
+ * This program and the accompanying materials  are made available under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either version 3 of the License, or (at your option)
+ * any later version. 
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at: https://www.gnu.org/licenses/gpl-3.0.txt
+ * Unless required by applicable law or agreed to in writing, software distributed under the Licence is 
+ * distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and limitations under the Licence.
+ *  
+ * Authors: Lorenzo Bacci (IGSG-CNR)
+ ******************************************************************************/
 package it.cnr.igsg.linkoln;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
+
+import it.cnr.igsg.linkoln.service.LinkolnAnnotationService;
+import it.cnr.igsg.linkoln.service.LinkolnService;
+import it.cnr.igsg.linkoln.service.ServiceManager;
+import it.cnr.igsg.linkoln.service.impl.Util;
 
 
 public class Linkoln {
@@ -59,31 +58,6 @@ public class Linkoln {
 		return output;
 	}
 	
-	public static LinkolnDocument runOnAnnotatedInput(String text) {
-		
-		return runOnAnnotatedInput(text, "it");
-	}
-	
-	public static LinkolnDocument runOnAnnotatedInput(String text, String lang) {
-		
-		LinkolnDocument linkolnDocument = LinkolnDocumentFactory.getDocument("");
-		
-		linkolnDocument.setLanguage(lang);
-		
-		linkolnDocument.setText(text);
-		
-		//TODO Gestire errors e messages - Singoli fallimenti dei servizi devono far fallire tutta la pipeline
-		
-		Linkoln.run(linkolnDocument);
-		
-		if( !linkolnDocument.hasFailed()) {
-			
-			linkolnDocument.htmlPostProcessing();
-		}
-		
-		return linkolnDocument;
-	}
-	
 	public static void run(LinkolnDocument linkolnDocument) {
 		
 		long startTime = System.currentTimeMillis();
@@ -95,7 +69,7 @@ public class Linkoln {
 			if(DEBUG) System.out.print("Loading municipalities... ");
 			try {
 			
-				initMunicipalities();
+				Util.initMunicipalities();
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -154,37 +128,4 @@ public class Linkoln {
 		
 		linkolnDocument.setExecutionTime(elapsedTime);
 	}
-	
-	private static boolean initMunicipalities() throws IOException {
-		
-		if(Util.token2code != null) {
-			
-			return false;
-		}
-		
-		File inputFile = new File("codiciTokenized.txt");
-		
-		Util.token2code = new HashMap<String,String>();
-		
-		if( !inputFile.exists()) {
-			
-			return false;
-		}
-	
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile)));
-		String l = null;
-
-	    while( ( l = reader.readLine() ) != null ) {
-
-			int split = l.indexOf(" ");
-			String code = l.substring(0, split).trim();
-			String namedEntity = l.substring(split).trim().toLowerCase();
-		
-			Util.token2code.put(namedEntity, code);
-	    }
-	    reader.close();   
-
-		return true;
-	}
-	
 }
