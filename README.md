@@ -22,6 +22,9 @@
 *  A collection of all the legal references found in the input;
 *  the original text or document annotated with hypertextual links in correspondence of the identified citations.
 
+### Download the library
+*  Linkoln v. 2.0.9 is available as a Java library here: [Caption](https://example.com)
+
 ### Testing the library
 
 ```java
