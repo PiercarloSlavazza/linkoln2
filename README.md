@@ -23,7 +23,7 @@
 *  the original text or document annotated with hypertextual links in correspondence of the identified citations.
 
 ### Download the library
-*  Linkoln v. 2.0.9 is available as a Java library here: [http://dev.igsg.cnr.it/linkoln/linkoln-2.0.9.jar](http://dev.igsg.cnr.it/linkoln/linkoln-2.0.9.jar)
+*  Linkoln v. 2.0.9 is available as a Java library here: [http://dev.igsg.cnr.it/linkoln/linkoln-2.0.9-java-1.7.jar](http://dev.igsg.cnr.it/linkoln/linkoln-2.0.9-java-1.7.jar)
 
 ### Testing the library
 
