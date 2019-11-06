@@ -63,7 +63,7 @@ public class Test {
 }
 ```
 
-```console
+```pre
 
 1) List of identified legal references:
 
