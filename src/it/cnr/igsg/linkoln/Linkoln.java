@@ -17,6 +17,7 @@ package it.cnr.igsg.linkoln;
 import java.io.IOException;
 
 import it.cnr.igsg.linkoln.service.LinkolnAnnotationService;
+import it.cnr.igsg.linkoln.service.LinkolnRenderingService;
 import it.cnr.igsg.linkoln.service.LinkolnService;
 import it.cnr.igsg.linkoln.service.ServiceManager;
 import it.cnr.igsg.linkoln.service.impl.Util;
@@ -25,11 +26,11 @@ import it.cnr.igsg.linkoln.service.impl.Util;
 public class Linkoln {
 
 	
-	public final static String VERSION = "2.0.9";
+	public final static String VERSION = "2.1.1";
 	
-	public static boolean DEBUG = false;	
+	public static boolean DEBUG = false;
 	public static boolean DEBUG_HTML = false;
-	public static boolean LOAD_MUNICIPALITIES = false;
+	public static boolean LOAD_MUNICIPALITIES = true;
 	
 	public static boolean HTML_TARGET_BLANK = true;
 	
@@ -45,11 +46,6 @@ public class Linkoln {
 		//TODO Gestire errors e messages - Singoli fallimenti dei servizi devono far fallire tutta la pipeline
 		
 		Linkoln.run(linkolnDocument);
-		
-		if( !linkolnDocument.hasFailed()) {
-			
-			linkolnDocument.htmlPostProcessing();
-		}
 		
 		return linkolnDocument;
 	}
@@ -71,7 +67,7 @@ public class Linkoln {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if(DEBUG) System.out.println("Done. (" + Util.token2code.size() + ")");
+			if(DEBUG && (Util.token2code != null)) System.out.println("Done. (" + Util.token2code.size() + ")");
 		}
 		
 		//Run every service implementation for the specified language/jurisdiction
@@ -101,6 +97,12 @@ public class Linkoln {
 					//Update the annotation history
 					((LinkolnDocument) linkolnDocument).addAnnotationService((LinkolnAnnotationService) service);
 				}
+				
+				if(service instanceof LinkolnRenderingService) {
+					
+					((LinkolnDocument) linkolnDocument).addRenderingService((LinkolnRenderingService) service);
+				}
+
 			}
 		}
 		

@@ -21,29 +21,4 @@ public class OfficialJournal extends Journal {
 
 		return "OFF_JOURNAL";
 	}
-
-	public String getUrl() {
-		
-		
-		//http://www.gazzettaufficiale.it/gazzetta/serie_generale/caricaDettaglio?dataPubblicazioneGazzetta=2007-02-26&numeroGazzetta=47
-		
-		//ESISTE ANCHE QUESTA FORMA:
-		//http://www.gazzettaufficiale.it/eli/gu/2018/03/10/58/sg/pdf
-		//ovvero
-		//http://www.gazzettaufficiale.it/eli/gu/2018/03/10/58/sg
-		
-		//TODO VEDERE COME GESTIRE I SUPPLEMENTI -altro parametro?
-		
-		if(getRelatedEntity("NUMBER") == null || getRelatedEntity("DATE") == null) {
-			
-			return "";
-		}
-		
-		String guNumber = getRelatedEntity("NUMBER").getValue();
-		String guDate = getRelatedEntity("DATE").getValue();
-		
-		return "http://www.gazzettaufficiale.it/gazzetta/serie_generale/caricaDettaglio?dataPubblicazioneGazzetta=" + guDate + "&numeroGazzetta=" + guNumber;
-
-	}
-	
 }

@@ -20,7 +20,7 @@ public class LinkolnDocumentFactory {
 	 * Init new LinkolnDocuments. 
 	 */
 	
-	public static LinkolnDocument getDocument(String identifier) {
+	public static LinkolnDocument getDocument(String identifier) { //TODO LinkolnIdentifier
 
 		LinkolnDocument linkolnDocument = new LinkolnDocument();
 		

@@ -12,13 +12,32 @@
  *  
  * Authors: Lorenzo Bacci (IGSG-CNR)
  ******************************************************************************/
-package it.cnr.igsg.linkoln.entity;
+package it.cnr.igsg.linkoln.reference;
 
-public class CaseLawReference extends Reference {
-	
+import it.cnr.igsg.linkoln.LinkolnDocument;
+import it.cnr.igsg.linkoln.entity.CaseLawReference;
+import it.cnr.igsg.linkoln.entity.Reference;
+
+public class EcliIdentifierGeneration implements IdentifierGeneration {
+
 	@Override
-	public String getEntityName() {
+	public LinkolnIdentifier getLinkolnIdentifier(LinkolnDocument linkolnDocument, Reference annotationEntity) {
 
-		return "CL_REF";
+		if( !(annotationEntity instanceof CaseLawReference)) return null;
+
+		return process((CaseLawReference) annotationEntity);
 	}
+
+	private LinkolnIdentifier process(CaseLawReference entity) {
+		
+		LinkolnIdentifier linkolnIdentifier = new LinkolnIdentifier();
+		linkolnIdentifier.setType(Identifiers.ECLI);
+		
+		String ecli = "ECLI::::";
+		String urlPrefix = "https://e-justice.europa.eu/ecli/";
+
+		
+		return null;
+	}
+	
 }

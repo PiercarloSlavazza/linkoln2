@@ -17,7 +17,19 @@ package it.cnr.igsg.linkoln.entity;
 import java.util.HashMap;
 import java.util.Map;
 
+import it.cnr.igsg.linkoln.reference.LinkolnReference;
+
 public class Reference extends AnnotationEntity {
+
+	private LinkolnReference linkolnReference = null;
+	
+	public LinkolnReference getLinkolnReference() {
+		return linkolnReference;
+	}
+
+	public void setLinkolnReference(LinkolnReference linkolnReference) {
+		this.linkolnReference = linkolnReference;
+	}
 
 	@Override
 	public String getEntityName() {

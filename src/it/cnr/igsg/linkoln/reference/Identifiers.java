@@ -12,13 +12,13 @@
  *  
  * Authors: Lorenzo Bacci (IGSG-CNR)
  ******************************************************************************/
-package it.cnr.igsg.linkoln.entity;
+package it.cnr.igsg.linkoln.reference;
 
-public class CaseLawReference extends Reference {
-	
-	@Override
-	public String getEntityName() {
+public enum Identifiers {
 
-		return "CL_REF";
-	}
+	CELEX,
+	ECLI,
+	ELI,
+	GAZZETTE,
+	URN;
 }

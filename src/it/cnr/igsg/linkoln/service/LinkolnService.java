@@ -88,7 +88,7 @@ public abstract class LinkolnService implements Comparable<LinkolnService>, Link
 		
 		return true;
 	}
-	
+	              
 	protected void beforeRun() {
 
 	}

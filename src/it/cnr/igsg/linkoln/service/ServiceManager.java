@@ -20,7 +20,42 @@ import java.util.Collections;
 import java.util.ServiceLoader;
 
 import it.cnr.igsg.linkoln.Linkoln;
-import it.cnr.igsg.linkoln.service.impl.it.*;
+import it.cnr.igsg.linkoln.service.impl.FinalizeAnnotations;
+import it.cnr.igsg.linkoln.service.impl.HtmlDebugRenderer;
+import it.cnr.igsg.linkoln.service.impl.HtmlRenderer;
+import it.cnr.igsg.linkoln.service.impl.it.Abbreviations;
+import it.cnr.igsg.linkoln.service.impl.it.AddPartitionsToReferences;
+import it.cnr.igsg.linkoln.service.impl.it.AliasPartitions;
+import it.cnr.igsg.linkoln.service.impl.it.AliasReferences;
+import it.cnr.igsg.linkoln.service.impl.it.Aliases;
+import it.cnr.igsg.linkoln.service.impl.it.ArticleNumbers;
+import it.cnr.igsg.linkoln.service.impl.it.Articles;
+import it.cnr.igsg.linkoln.service.impl.it.CaseLawAuthorities;
+import it.cnr.igsg.linkoln.service.impl.it.CaseNumbers;
+import it.cnr.igsg.linkoln.service.impl.it.Commas;
+import it.cnr.igsg.linkoln.service.impl.it.Dates;
+import it.cnr.igsg.linkoln.service.impl.it.DetachedSections;
+import it.cnr.igsg.linkoln.service.impl.it.DocTypes;
+import it.cnr.igsg.linkoln.service.impl.it.Geos;
+import it.cnr.igsg.linkoln.service.impl.it.Items;
+import it.cnr.igsg.linkoln.service.impl.it.JointCaseNumbers;
+import it.cnr.igsg.linkoln.service.impl.it.Journals;
+import it.cnr.igsg.linkoln.service.impl.it.LegislationAuthorities;
+import it.cnr.igsg.linkoln.service.impl.it.Letters;
+import it.cnr.igsg.linkoln.service.impl.it.Ministries;
+import it.cnr.igsg.linkoln.service.impl.it.NamedEntities;
+import it.cnr.igsg.linkoln.service.impl.it.NationalAuthorities;
+import it.cnr.igsg.linkoln.service.impl.it.Numbers;
+import it.cnr.igsg.linkoln.service.impl.it.Parties;
+import it.cnr.igsg.linkoln.service.impl.it.Partitions;
+import it.cnr.igsg.linkoln.service.impl.it.References;
+import it.cnr.igsg.linkoln.service.impl.it.ReferencesLaw;
+import it.cnr.igsg.linkoln.service.impl.it.RegionalCaseLawAuthorities;
+import it.cnr.igsg.linkoln.service.impl.it.RegionalLegislationAuthorities;
+import it.cnr.igsg.linkoln.service.impl.it.Sections;
+import it.cnr.igsg.linkoln.service.impl.it.Stopwords;
+import it.cnr.igsg.linkoln.service.impl.it.Subjects;
+import it.cnr.igsg.linkoln.service.impl.it.Vs;
 
 
 public class ServiceManager {
@@ -112,11 +147,10 @@ public class ServiceManager {
 			services.add(new Partitions());
 			services.add(new AddPartitionsToReferences());
 			
-			if(Linkoln.DEBUG_HTML) {
-				services.add(new HtmlDebugRendering());
-			} else {
-				services.add(new HtmlRendering());
-			}
+			services.add(new FinalizeAnnotations());
+			
+			services.add(new HtmlRenderer());
+			services.add(new HtmlDebugRenderer());
 		}
 	}
 	
@@ -135,5 +169,4 @@ public class ServiceManager {
 		
 		return Collections.unmodifiableCollection(selectedServices);
 	}
-	
 }

@@ -1097,11 +1097,27 @@ public class Dates extends LinkolnAnnotationService {
 	@Override
 	protected void addValue() {
 
-		//TODO check for NULL values?
-			
-		String norm = annotationEntity.getRelatedEntity("YEAR").getValue() + "-" + 
-					annotationEntity.getRelatedEntity("MONTH").getValue() + "-" + 
-					annotationEntity.getRelatedEntity("DAY").getValue();
+		//Check for NULL values?
+
+		String norm = "";
+		
+		if(annotationEntity.getRelatedEntity("YEAR") != null && annotationEntity.getRelatedEntity("YEAR").getValue() != null) {
+			norm = annotationEntity.getRelatedEntity("YEAR").getValue() + "-";
+		} else {
+			System.err.println("Dates - addValue() - YEAR is null for " + annotationEntity.getText());
+		}
+
+		if(annotationEntity.getRelatedEntity("MONTH") != null && annotationEntity.getRelatedEntity("MONTH").getValue() != null) {
+			norm += annotationEntity.getRelatedEntity("MONTH").getValue() + "-";
+		} else {
+			System.err.println("Dates - addValue() - MONTH is null for " + annotationEntity.getText());
+		}
+		
+		if(annotationEntity.getRelatedEntity("DAY") != null && annotationEntity.getRelatedEntity("DAY").getValue() != null) {
+			norm += annotationEntity.getRelatedEntity("DAY").getValue();
+		} else {
+			System.err.println("Dates - addValue() - DAY is null for " + annotationEntity.getText());
+		}
 		
 		annotationEntity.setValue(norm);
 	} 

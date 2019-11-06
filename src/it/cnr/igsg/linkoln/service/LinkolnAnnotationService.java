@@ -16,17 +16,18 @@ package it.cnr.igsg.linkoln.service;
 
 import it.cnr.igsg.linkoln.Linkoln;
 import it.cnr.igsg.linkoln.entity.AnnotationEntity;
+import it.cnr.igsg.linkoln.service.impl.FinalizeAnnotations;
 import it.cnr.igsg.linkoln.service.impl.Util;
 
 public abstract class LinkolnAnnotationService extends LinkolnService {
 
 	/*
-	 * Annotation Services realized with JFlex.
+	 * Annotation Services pipeline realized with JFlex.
 	 */
 	
 	private String input = "";
 	
-	private String output = "";
+	protected String output = "";
 	
 	private StringBuilder after = null;
 	
@@ -45,7 +46,14 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 		
 		//Add blanks at the beginning and the the end of the input for edge parsing 
 		
-		input =  " " + getLinkolnDocument().getAnnotatedText() + " ";
+		if(this instanceof LinkolnRenderingService) {
+			
+			input =  " " + getLinkolnDocument().getFinalAnnotationsText() + " ";
+
+		} else {
+			
+			input =  " " + getLinkolnDocument().getAnnotatedText() + " ";
+		}
 		
 		after = new StringBuilder();
 	}
@@ -56,34 +64,35 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 		output = after.toString();
 		
 		boolean error = false;
-		
-		/*
-		Check the text before and after: it must match (besides annotations)
-		*/
-		
-		String cleanBefore = Util.removeAllAnnotations(input);
-		String cleanAfter = Util.removeAllAnnotations(output);
 
-		if( !cleanBefore.equals(cleanAfter)) {
+		if( !(this instanceof LinkolnRenderingService)) {
+
+			/*
+			Check the text before and after: it must match (besides annotations)
+			*/
 			
-			System.err.println(this.getDescription() + " - Annotation service error: before and after text don't match!");
-			System.err.println("BEFORE:" + input);
-			System.err.println("AFTER: " + output);
-			System.err.println("CLEANBEFORE:" + cleanBefore);
-			System.err.println("CLEANAFTER: " + cleanAfter);
-			System.err.println("EQUALPART: " + Util.getEqualPart(cleanBefore, cleanAfter));
-			
-			if(Linkoln.FORCE_EXIT_AFTER_SERVICE_FAILURE) {
-			
-				error = true;
+			String cleanBefore = Util.removeAllAnnotations(input);
+			String cleanAfter = Util.removeAllAnnotations(output);
+	
+			if( !cleanBefore.equals(cleanAfter)) {
+				
+				System.err.println(this.getDescription() + " - Annotation service error: before and after text don't match!");
+				System.err.println("BEFORE:" + input);
+				System.err.println("AFTER: " + output);
+				System.err.println("CLEANBEFORE:" + cleanBefore);
+				System.err.println("CLEANAFTER: " + cleanAfter);
+				System.err.println("EQUALPART: " + Util.getEqualPart(cleanBefore, cleanAfter));
+				
+				if(Linkoln.FORCE_EXIT_AFTER_SERVICE_FAILURE) {
+				
+					error = true;
+				}
 			}
-		}
-		
 
-		
-		//TODO check after the run that there are no nested annotations
-		
-		//TODO check after the run that there are no unbalanced annotations
+			//TODO check after the run that there are no nested annotations
+			
+			//TODO check after the run that there are no unbalanced annotations
+		}			
 		
 		//Remove the artificial blanks
 		
@@ -100,6 +109,16 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 			}
 		}
 		
+		if(this instanceof FinalizeAnnotations) {
+			
+			getLinkolnDocument().setFinalAnnotationsText(output);
+		}
+		
+		if(this instanceof LinkolnRenderingService) {
+			
+			((LinkolnRenderingService) this).postProcess();
+		}
+
 		return !error;
 	}
 	

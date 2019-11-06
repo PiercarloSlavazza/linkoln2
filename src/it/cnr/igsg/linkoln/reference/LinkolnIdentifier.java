@@ -12,13 +12,52 @@
  *  
  * Authors: Lorenzo Bacci (IGSG-CNR)
  ******************************************************************************/
-package it.cnr.igsg.linkoln.entity;
+package it.cnr.igsg.linkoln.reference;
 
-public class CaseLawReference extends Reference {
+public final class LinkolnIdentifier {
+
+	/*
+	 * 
+	 * Urls and identifiers associated with linkoln references.
+	 * 
+	 * - type of identifier (ECLI,ELI,CELEX,etc.)
+	 * - identifier code string
+	 * - generated URL for accessing the document on the web
+	 * 
+	 */
 	
-	@Override
-	public String getEntityName() {
-
-		return "CL_REF";
+	private Identifiers type = null;
+	
+	private String code = "";
+	
+	private String url = "";
+	
+	LinkolnIdentifier() {
+		
 	}
+	
+	public Identifiers getType() {
+		return type;
+	}
+
+	void setType(Identifiers type) {
+		this.type = type;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	void setUrl(String url) {
+		this.url = url;
+	}
+
 }
