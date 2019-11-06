@@ -30,27 +30,37 @@
 
 ```java
 	
+import it.cnr.igsg.linkoln.Linkoln;
+import it.cnr.igsg.linkoln.LinkolnDocument;
+import it.cnr.igsg.linkoln.reference.LinkolnIdentifier;
+import it.cnr.igsg.linkoln.reference.LinkolnReference;
+
+public class Test {
+
 	public static void main(String[] args) {
-			
+	
 		String text = "vedi lett. e), comma 2, art. 2 del decreto del Ministero delle finanze del 25 novembre 1998, n. 418";
 
 		LinkolnDocument linkolnDocument = Linkoln.run(text);
 		
 		if( !linkolnDocument.hasFailed()) {
 			
-			System.out.println("\nList of identified legal references:");
+			System.out.println("\n1) List of identified legal references:");
 			
-			for(AnnotationEntity entity : linkolnDocument.getAnnotationEntities()) {
+			for(LinkolnReference reference : linkolnDocument.getReferences()) {
 				
-				if(entity instanceof Reference) {
+				System.out.println("\n\t- " + reference.getType() + " found: \"" + reference.getCitation() + "\"");
+				
+				for(LinkolnIdentifier identifier : reference.getLinkolnIdentifiers()) {
 					
-					System.out.println("\n" + entity.getClass().getSimpleName() + " found: \n" + ((Reference) entity));
+					System.out.println("\t\t " + identifier.getType() + " (" + identifier.getCode() + ") URL: " + identifier.getUrl());
 				}
 			}
 			
-			System.out.println("\n\nOriginal text with hyperlinks:\n\n" + linkolnDocument.getFinalHtml());
+			System.out.println("\n\n2) HTML:\n\n" + linkolnDocument.getRendering("html"));
 		}	
 	}
+}
 ```
 
 
