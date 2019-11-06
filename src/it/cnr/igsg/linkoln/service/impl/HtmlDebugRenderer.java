@@ -311,7 +311,7 @@ public class HtmlDebugRenderer extends LinkolnRenderingService {
 	public String language() { return "IT"; }
 
 	@Override
-	public String version() { return "0.9"; }
+	public String version() { return "1.0"; }
 
 	@Override
 	public String name() { return "html-debug"; }
@@ -717,7 +717,7 @@ public class HtmlDebugRenderer extends LinkolnRenderingService {
             // fall through
           case 5: break;
           case 2: 
-            { addText("<strong>" + yytext() + "</strong>");
+            { addText("<font color=\"red\">" + yytext() + "</font>");
             } 
             // fall through
           case 6: break;
@@ -771,7 +771,7 @@ public class HtmlDebugRenderer extends LinkolnRenderingService {
 	
 	if(url.equals("")) {
 		
-		addText("<font color=\"red\">" + ref.getText() + "</font>");
+		addText("<font color=\"blue\">" + ref.getText() + "</font>");
 		
 	} else {
 		

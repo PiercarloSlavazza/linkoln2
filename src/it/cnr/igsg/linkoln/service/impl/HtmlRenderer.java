@@ -310,7 +310,7 @@ public class HtmlRenderer extends LinkolnRenderingService {
 	public String language() { return "IT"; }
 
 	@Override
-	public String version() { return "0.7"; }
+	public String version() { return "0.8"; }
 
 	@Override
 	public String name() { return "html"; }
@@ -765,7 +765,8 @@ public class HtmlRenderer extends LinkolnRenderingService {
 		
 	if(url.equals("")) {
 		
-		addText(ref.getText());
+		//addText(ref.getText());
+		addText("<font color=\"blue\">" + ref.getText() + "</font>");
 		
 	} else {
 		
