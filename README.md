@@ -26,7 +26,7 @@
 *  Linkoln v. 2.1.1 is available as a Java library here: [http://dev.igsg.cnr.it/linkoln/linkoln-2.1.1.jar](http://dev.igsg.cnr.it/linkoln/linkoln-2.1.1.jar)
 
 
-### Testing the library
+## Testing the library
 
 ```java
 	
@@ -62,6 +62,8 @@ public class Test {
 	}
 }
 ```
+
+## Returns
 
 ```pre
 
