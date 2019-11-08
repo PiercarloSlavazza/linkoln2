@@ -36,7 +36,7 @@ public class EcliIdentifierGeneration implements IdentifierGeneration {
 		String auth = entity.getAuthority();
 		String year = entity.getYear();
 		String number = entity.getNumber();
-		String subject = entity.getValue("SUBJECT");
+		String subject = entity.getRelatedValue("SUBJECT");
 		
 		if(auth == null) {
 			

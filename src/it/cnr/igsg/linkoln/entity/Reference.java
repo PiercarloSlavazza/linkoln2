@@ -168,22 +168,4 @@ public class Reference extends AnnotationEntity {
 		return null;
 	}
 	
-	/*
-	public String getDate() {
-		
-		AnnotationEntity entity = this.getRelatedEntity("DATE");
-		if(entity != null) return entity.getValue();
-
-		return null;
-	}
-	
-	public String getSubject() {
-		
-		AnnotationEntity entity = this.getRelatedEntity("SUBJECT");
-		if(entity != null) return entity.getValue();
-
-		return null;
-	}
-	*/
-	
 }

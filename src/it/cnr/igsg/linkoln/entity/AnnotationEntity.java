@@ -38,7 +38,7 @@ public abstract class AnnotationEntity {
 		this.value = value;
 	}
 
-	public String getValue(String relatedEntityName) {
+	public String getRelatedValue(String relatedEntityName) {
 		
 		AnnotationEntity entity = this.getRelatedEntity(relatedEntityName);
 		if(entity != null) return entity.getValue();
