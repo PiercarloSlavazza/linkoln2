@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import it.cnr.igsg.linkoln.reference.LinkolnReference;
+import it.cnr.igsg.linkoln.service.impl.Util;
 
 public class Reference extends AnnotationEntity {
 
@@ -99,5 +100,90 @@ public class Reference extends AnnotationEntity {
 		
 		return false;
 	}
+	
+	public String getAuthority() {
+
+		AnnotationEntity entity = this.getRelatedEntity("CL_AUTH");
+		if(entity != null) return entity.getValue();
+		
+		entity = this.getRelatedEntity("LEG_AUTH");
+		if(entity != null) return entity.getValue();
+		
+		entity = this.getRelatedEntity("EU_CL_AUTH");
+		if(entity != null) return entity.getValue();
+		
+		entity = this.getRelatedEntity("EU_LEG_AUTH");
+		if(entity != null) return entity.getValue();
+		
+		return null;
+	}
+	
+	public String getDocumentType() {
+		
+		AnnotationEntity entity = this.getRelatedEntity("CL_DOCTYPE");
+		if(entity != null) return entity.getValue();
+
+		entity = this.getRelatedEntity("LEG_DOCTYPE");
+		if(entity != null) return entity.getValue();
+		
+		entity = this.getRelatedEntity("EU_LEG_DOCTYPE");
+		if(entity != null) return entity.getValue();
+		
+		entity = this.getRelatedEntity("DOCTYPE");
+		if(entity != null) return entity.getValue();
+		
+		return null;
+	}
+	
+
+	public String getNumber() {
+		
+		AnnotationEntity entity = this.getRelatedEntity("NUMBER");
+		if(entity != null) {
+			
+			return Util.readFirstNumber(entity.getValue()); //TODO non è detto sia sempre il primo numero (es.: 2019/123)
+		}
+
+		return null;
+	}
+	
+	public String getYear() {
+		
+		//Look into NUMBER first, then DATE
+		
+		AnnotationEntity entity = this.getRelatedEntity("NUMBER");
+		if(entity != null) {
+			
+			AnnotationEntity year = entity.getRelatedEntity("YEAR");
+			if(year != null) return year.getValue();
+		}
+		
+		entity = this.getRelatedEntity("DATE");
+		if(entity != null) {
+			
+			AnnotationEntity year = entity.getRelatedEntity("YEAR");
+			if(year != null) return year.getValue();
+		}
+
+		return null;
+	}
+	
+	/*
+	public String getDate() {
+		
+		AnnotationEntity entity = this.getRelatedEntity("DATE");
+		if(entity != null) return entity.getValue();
+
+		return null;
+	}
+	
+	public String getSubject() {
+		
+		AnnotationEntity entity = this.getRelatedEntity("SUBJECT");
+		if(entity != null) return entity.getValue();
+
+		return null;
+	}
+	*/
 	
 }

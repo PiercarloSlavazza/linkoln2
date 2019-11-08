@@ -48,7 +48,7 @@ public class LinkolnReferenceFactory {
 		
 		LinkolnReference linkolnReference = new LinkolnReference(annotationEntity);
 		
-		linkolnDocument.addReference(linkolnReference);
+		linkolnDocument.addLinkolnReference(linkolnReference);
 		annotationEntity.setLinkolnReference(linkolnReference);
 		
 		//Generation of linkoln identifiers
@@ -57,7 +57,7 @@ public class LinkolnReferenceFactory {
 		
 		for(IdentifierGeneration generator : generators) {
 			
-			linkolnReference.addIdentifier(generator.getLinkolnIdentifier(linkolnDocument, annotationEntity));
+			linkolnReference.addLinkolnIdentifier(generator.getLinkolnIdentifier(linkolnDocument, annotationEntity));
 		}
 		
 		return linkolnReference;

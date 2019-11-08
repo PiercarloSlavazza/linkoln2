@@ -26,7 +26,7 @@ import it.cnr.igsg.linkoln.service.impl.Util;
 public class Linkoln {
 
 	
-	public final static String VERSION = "2.1.1";
+	public final static String VERSION = "2.1.2";
 	
 	public static boolean DEBUG = false;
 	public static boolean DEBUG_HTML = false;
@@ -39,7 +39,7 @@ public class Linkoln {
 	
 	public static LinkolnDocument run(String text) {
 		
-		LinkolnDocument linkolnDocument = LinkolnDocumentFactory.getDocument("");
+		LinkolnDocument linkolnDocument = LinkolnDocumentFactory.createLinkolnDocument();
 		
 		linkolnDocument.setText(text);
 		

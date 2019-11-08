@@ -25,18 +25,76 @@ public class EcliIdentifierGeneration implements IdentifierGeneration {
 
 		if( !(annotationEntity instanceof CaseLawReference)) return null;
 
-		return process((CaseLawReference) annotationEntity);
-	}
-
-	private LinkolnIdentifier process(CaseLawReference entity) {
+		CaseLawReference entity = (CaseLawReference) annotationEntity; 
 		
 		LinkolnIdentifier linkolnIdentifier = new LinkolnIdentifier();
 		linkolnIdentifier.setType(Identifiers.ECLI);
 		
-		String ecli = "ECLI::::";
-		String urlPrefix = "https://e-justice.europa.eu/ecli/";
-
+		//String urlPrefix = "https://e-justice.europa.eu/ecli/";  //Funziona meglio così: https://e-justice.europa.eu/ecli/it/ECLI:CODE.html 
+		String urlPrefix = "https://e-justice.europa.eu/ecli/it/";
 		
+		String auth = entity.getAuthority();
+		String year = entity.getYear();
+		String number = entity.getNumber();
+		String subject = entity.getValue("SUBJECT");
+		
+		if(auth == null) {
+			
+			//TODO make assumptions based on the metadata of the input document?
+			if(linkolnDocument.getAuthority().toUpperCase().indexOf("CASS") > -1) auth = "IT_CASS";
+			if(linkolnDocument.getAuthority().toUpperCase().indexOf("COST") > -1) auth = "IT_COST";
+			
+			//TODO allargare alle autorità emananti di merito e appello?? -> ECLI CODES...
+			
+			if(auth == null) return null;
+		}
+		
+		if(auth.equals("IT_COST") && year != null && number != null) {
+
+			linkolnIdentifier.setCode("ECLI:IT:COST:" + year + ":" + number);
+		}
+
+		if(auth.equals("IT_CASS") && year != null && number != null) {
+			
+			if(subject != null) {
+
+				if(subject.toUpperCase().startsWith("C")) subject = "CIV";
+				if(subject.toUpperCase().startsWith("P")) subject = "PEN";
+			
+			} else if( !linkolnDocument.getSector().equals("")) {
+				
+				if(linkolnDocument.getSector().toUpperCase().startsWith("C")) subject = "CIV";
+				if(linkolnDocument.getSector().toUpperCase().startsWith("P")) subject = "PEN";
+				if(linkolnDocument.getSector().toUpperCase().startsWith("L")) subject = "CIV"; //TODO Lavoro? => civile
+				
+			} else {
+				
+				//TODO guess sector based on other references (eg.: many references to the civil or penal code)
+				
+				return null;
+			}
+			
+			if(subject == null || subject.equals("")) return null;
+			
+			linkolnIdentifier.setCode("ECLI:IT:CASS:" + year + ":" + number + subject);
+		}
+		
+
+		//TODO CDS, CONT
+		
+		
+		
+		//TODO merito???
+		
+		
+		
+		if( !linkolnIdentifier.getCode().equals("")) {
+			
+			linkolnIdentifier.setUrl(urlPrefix + linkolnIdentifier.getCode() + ".html");
+			
+			return linkolnIdentifier;
+		}
+
 		return null;
 	}
 	

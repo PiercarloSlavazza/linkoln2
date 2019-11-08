@@ -68,12 +68,41 @@ public class LinkolnDocument {
 	
 	public boolean isPlainText = true;
 	
-	private Collection<LinkolnReference> references = new ArrayList<LinkolnReference>();
+	private Collection<LinkolnReference> linkolnReferences = new ArrayList<LinkolnReference>();
+	
+	
+	/*
+	 * Metadati dell'atto
+	 */
+	private String sector = "";
+	private String authority = "";
+
+	public String getSector() {
+		return sector;
+	}
+
+	public void setSector(String sector) {
+		
+		if(sector != null) {
+			this.sector = sector.trim();
+		}
+	}
+
+	public String getAuthority() {
+		return authority;
+	}
+
+	public void setAuthority(String authority) {
+		
+		if(authority != null) {
+			this.authority = authority.trim();
+		}
+	}	
+	
 	
 	/*
 	 * Altro:
 	 */
-	
 	private long executionTime = 0;
 	
 	public long getExecutionTime() {
@@ -281,14 +310,14 @@ public class LinkolnDocument {
 		return null;
 	}
 	
-	public boolean addReference(LinkolnReference linkolnReference) {
+	public boolean addLinkolnReference(LinkolnReference linkolnReference) {
 		
-		return references.add(linkolnReference);
+		return linkolnReferences.add(linkolnReference);
 	}
 	
 	public Collection<LinkolnReference> getReferences() {
 		
-		return Collections.unmodifiableCollection(references);
+		return Collections.unmodifiableCollection(linkolnReferences);
 	}
 	
 

@@ -35,7 +35,7 @@ public final class LinkolnReference {
 	
 	private String citation = null;
 	
-	private Collection<LinkolnIdentifier> identifiers = new ArrayList<LinkolnIdentifier>();
+	private Collection<LinkolnIdentifier> linkolnIdentifiers = new ArrayList<LinkolnIdentifier>();
 	
 	LinkolnReference() {
 		
@@ -49,9 +49,9 @@ public final class LinkolnReference {
 		this.type = annotationEntity.getClass().getSimpleName();
 	}
 
-	void addIdentifier(LinkolnIdentifier linkolnIdentifier) {
+	void addLinkolnIdentifier(LinkolnIdentifier linkolnIdentifier) {
 		
-		if(linkolnIdentifier != null) identifiers.add(linkolnIdentifier);
+		if(linkolnIdentifier != null) linkolnIdentifiers.add(linkolnIdentifier);
 	}
 	
 	public String getCitation() {
@@ -61,7 +61,7 @@ public final class LinkolnReference {
 	
 	public Collection<LinkolnIdentifier> getLinkolnIdentifiers() {
 		
-		return Collections.unmodifiableCollection(identifiers);
+		return Collections.unmodifiableCollection(linkolnIdentifiers);
 	}
 
 	public String getType() {

@@ -38,6 +38,14 @@ public abstract class AnnotationEntity {
 		this.value = value;
 	}
 
+	public String getValue(String relatedEntityName) {
+		
+		AnnotationEntity entity = this.getRelatedEntity(relatedEntityName);
+		if(entity != null) return entity.getValue();
+
+		return null;
+	}
+	
 	protected Map<String,AnnotationEntity> name2entity = new HashMap<String,AnnotationEntity>();
 	
 	public void addRelatedEntity(AnnotationEntity annotationEntity) {

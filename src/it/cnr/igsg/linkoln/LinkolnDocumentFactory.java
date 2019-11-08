@@ -20,13 +20,20 @@ public class LinkolnDocumentFactory {
 	 * Init new LinkolnDocuments. 
 	 */
 	
-	public static LinkolnDocument getDocument(String identifier) { //TODO LinkolnIdentifier
+	public static LinkolnDocument createLinkolnDocument() {
+		
+		LinkolnDocument linkolnDocument = new LinkolnDocument();
+		
+		return linkolnDocument;
+	}
+	
+	public static LinkolnDocument createLinkolnDocument(String identifier) { //TODO LinkolnIdentifier
 
 		LinkolnDocument linkolnDocument = new LinkolnDocument();
 		
-		if(identifier != null) {
+		if(identifier != null && identifier.trim().length() > 0) {
 		
-			linkolnDocument.setIdentifier(identifier);
+			linkolnDocument.setIdentifier(identifier.trim());
 		}
 		
 		return linkolnDocument;
