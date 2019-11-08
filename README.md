@@ -22,14 +22,12 @@
 *  A collection of all the legal references found in the input;
 *  the original text or document annotated with hypertextual links in correspondence of the identified citations.
 
-### Download the library
+#### Download the library
 *  Linkoln v. 2.1.1 is available as a Java library here: [http://dev.igsg.cnr.it/linkoln/linkoln-2.1.1.jar](http://dev.igsg.cnr.it/linkoln/linkoln-2.1.1.jar)
 
 
-### Testing the library
-
+#### Testing the library
 ```java
-	
 import it.cnr.igsg.linkoln.Linkoln;
 import it.cnr.igsg.linkoln.LinkolnDocument;
 import it.cnr.igsg.linkoln.reference.LinkolnIdentifier;
@@ -63,8 +61,8 @@ public class Test {
 }
 ```
 
-```console
-
+#### Returns
+```pre
 1) List of identified legal references:
 
 	- LegislationReference found: "lett. e), comma 2, art. 2 del decreto del Ministero delle finanze del 25 novembre 1998, n. 418"
@@ -79,7 +77,6 @@ public class Test {
 <body><pre>
 vedi <a href="http://www.normattiva.it/uri-res/N2Ls?urn:nir:ministero.finanze:decreto:1998-11-25;418~art2-com2-lete" target="_blank">lett. e), comma 2, art. 2 del decreto del Ministero delle finanze del 25 novembre 1998, n. 418</a>
 </pre></body></html>
-
 ```
 
 
