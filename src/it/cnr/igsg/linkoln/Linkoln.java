@@ -26,14 +26,17 @@ import it.cnr.igsg.linkoln.service.impl.Util;
 public class Linkoln {
 
 	
-	public final static String VERSION = "2.1.2";
+	public final static String VERSION = "2.1.3";
 	
 	public static boolean DEBUG = false;
-	public static boolean DEBUG_HTML = false;
-	public static boolean LOAD_MUNICIPALITIES = true;
-	
+
 	public static boolean HTML_TARGET_BLANK = true;
+	public static boolean HTML_ADD_HEADER = true;
+	public static boolean HTML_USE_PRE = true;
+	public static boolean HTML_DEBUG = false;
 	
+	public static boolean LOAD_MUNICIPALITIES = true;
+
 	public static boolean FORCE_EXIT_AFTER_SERVICE_FAILURE = true;
 	
 	

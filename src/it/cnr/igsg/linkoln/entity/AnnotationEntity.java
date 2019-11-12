@@ -30,7 +30,7 @@ public abstract class AnnotationEntity {
 	
 	private String value = ""; //normalized value
 	
-	public String getValue() {
+	public final String getValue() {
 		return value;
 	}
 
@@ -38,7 +38,7 @@ public abstract class AnnotationEntity {
 		this.value = value;
 	}
 
-	public String getRelatedValue(String relatedEntityName) {
+	public final String getRelatedValue(String relatedEntityName) {
 		
 		AnnotationEntity entity = this.getRelatedEntity(relatedEntityName);
 		if(entity != null) return entity.getValue();
@@ -48,26 +48,26 @@ public abstract class AnnotationEntity {
 	
 	protected Map<String,AnnotationEntity> name2entity = new HashMap<String,AnnotationEntity>();
 	
-	public void addRelatedEntity(AnnotationEntity annotationEntity) {
+	public final void addRelatedEntity(AnnotationEntity annotationEntity) {
 		
 		name2entity.put(annotationEntity.getEntityName(), annotationEntity);
 	}
 	
-	public AnnotationEntity getRelatedEntity(String entityName) {
+	public final AnnotationEntity getRelatedEntity(String entityName) {
 		
 		return name2entity.get(entityName);
 	}
 	
-	public Collection<AnnotationEntity> getRelatedEntities() {
+	public final Collection<AnnotationEntity> getRelatedEntities() {
 		
 		return Collections.unmodifiableCollection(name2entity.values());
 	}
 	
-	public String getText() {
+	public final String getText() {
 		return text;
 	}
 
-	public void setText(String text) {
+	public final void setText(String text) {
 		this.text = text;
 	}
 
@@ -80,7 +80,7 @@ public abstract class AnnotationEntity {
 		return output;
 	}
 	
-	public String toString() {
+	public final String toString() {
 
 		String related = "";
 		
@@ -96,15 +96,16 @@ public abstract class AnnotationEntity {
 		return id;
 	}
 
-	public void setId(String id) {
+	public final void setId(String id) {
 		this.id = id;
 	}
 
-	public int getPosition() {
+	public final int getPosition() {
 		return position;
 	}
 
-	public void setPosition(int position) {
+	public final void setPosition(int position) {
 		this.position = position;
-	}	
+	}
+	
 }

@@ -5,6 +5,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 
 import it.cnr.igsg.linkoln.HtmlAnnotation;
+import it.cnr.igsg.linkoln.Linkoln;
 import it.cnr.igsg.linkoln.service.impl.HtmlPostProcessing;
 
 public abstract class LinkolnRenderingService extends LinkolnAnnotationService {
@@ -56,11 +57,17 @@ public abstract class LinkolnRenderingService extends LinkolnAnnotationService {
 
 		output = finalContent.toString().trim();
 		
-		if(getLinkolnDocument().isPlainText) {
+		if(getLinkolnDocument().isPlainText && Linkoln.HTML_ADD_HEADER) {
 			
+			String preOpen = "";
+			String preClose = "";
+			if(Linkoln.HTML_USE_PRE) {
+				preOpen = "<pre>";
+				preClose = "</pre>";
+			}
 			//Add an HTML header and footer for plain texts
-			String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML//EN\" \"xhtml-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<body><pre>\n";
-			String footer = "\n</pre></body></html>";
+			String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML//EN\" \"xhtml-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<body>" + preOpen + "\n";
+			String footer = "\n" + preClose + "</body></html>";
 			
 			output = header + output + footer;
 		}		

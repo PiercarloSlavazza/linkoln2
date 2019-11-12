@@ -5,10 +5,13 @@ package it.cnr.igsg.linkoln.service.impl;
 import java.io.IOException;
 import java.io.StringReader;
 
-import it.cnr.igsg.linkoln.entity.AnnotationEntity;
-import it.cnr.igsg.linkoln.entity.Reference;
+import it.cnr.igsg.linkoln.Linkoln;
+import it.cnr.igsg.linkoln.entity.*;
+import it.cnr.igsg.linkoln.service.*;
 import it.cnr.igsg.linkoln.reference.LinkolnReferenceFactory;
-import it.cnr.igsg.linkoln.service.LinkolnAnnotationService;
+
+
+import it.cnr.igsg.linkoln.service.impl.Util;
 
 
 /**
@@ -307,7 +310,7 @@ public class FinalizeAnnotations extends LinkolnAnnotationService {
 	public String language() { return ""; }
 
 	@Override
-	public String version() { return "0.1"; }
+	public String version() { return "0.2"; }
 
 
 	/* An empty default constructor is required to comply with LinkolnService */
@@ -717,7 +720,7 @@ public class FinalizeAnnotations extends LinkolnAnnotationService {
             // fall through
           case 4: break;
           case 2: 
-            { 
+            { if(Linkoln.HTML_DEBUG) addText(yytext());
             } 
             // fall through
           case 5: break;
@@ -748,7 +751,7 @@ public class FinalizeAnnotations extends LinkolnAnnotationService {
    */
   public static void main(String argv[]) {
     if (argv.length == 0) {
-      System.out.println("Usage : java FinalizeAnnotation [ --encoding <name> ] <inputfile(s)>");
+      System.out.println("Usage : java FinalizeAnnotations [ --encoding <name> ] <inputfile(s)>");
     }
     else {
       int firstFilePos = 0;
