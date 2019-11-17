@@ -24,16 +24,29 @@ public final class LinkolnReference {
 
 	/*
 	 * 
-	 * Presentation interface for the extracted references.
+	 * Presentation of the extracted references.
 	 * 
 	 * - getCitation()
 	 * - getLinkolnIdentifiers()
 	 * 
 	 */
 	
-	private String type = ""; //LegislationReference, CaseLawReference, etc.
-	
 	private String citation = null;
+
+	private String type = null; //LegislationReference, CaseLawReference, etc.
+	private String authority = null;
+	private String authoritySection = null;
+	private String detachedAuthority = null;
+	private String docType = null;
+	private String number = null;
+	private String year = null;
+	private String date = null;
+	private String caseNumber = null;
+	private String city = null;
+	private String region = null;
+	private String applicant = null;
+	private String defendant = null;
+	
 	
 	private Collection<LinkolnIdentifier> linkolnIdentifiers = new ArrayList<LinkolnIdentifier>();
 	
@@ -42,11 +55,24 @@ public final class LinkolnReference {
 		//not to be used
 	}
 
-	LinkolnReference(Reference annotationEntity) {
+	LinkolnReference(Reference entity) {
 		
-		this.citation = annotationEntity.getText();
+		this.citation = entity.getText();
 		
-		this.type = annotationEntity.getClass().getSimpleName();
+		this.type = entity.getClass().getSimpleName();
+		
+		this.authority = entity.getAuthority();
+		this.authoritySection = entity.getRelatedValue("CL_AUTH_SECTION");
+		this.detachedAuthority = entity.getRelatedValue("CL_DETACHED_SECTION");
+		this.docType = entity.getDocumentType();
+		this.number = entity.getNumber();
+		this.year = entity.getYear();
+		this.date = entity.getRelatedValue("DATE");
+		this.caseNumber = entity.getRelatedValue("CASENUMBER");
+		this.city = entity.getRelatedValue("CITY");
+		this.region = entity.getRelatedValue("REGION");
+		this.applicant = entity.getRelatedValue("APPLICANT");
+		this.defendant = entity.getRelatedValue("DEFENDANT");
 	}
 
 	void addLinkolnIdentifier(LinkolnIdentifier linkolnIdentifier) {
@@ -65,7 +91,56 @@ public final class LinkolnReference {
 	}
 
 	public String getType() {
-		
 		return type;
 	}
+
+	public String getAuthority() {
+		return authority;
+	}
+
+	public String getAuthoritySection() {
+		return authoritySection;
+	}
+
+	public String getDetachedAuthority() {
+		return detachedAuthority;
+	}
+
+	public String getDocType() {
+		return docType;
+	}
+
+	public String getNumber() {
+		return number;
+	}
+
+	public String getYear() {
+		return year;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public String getCaseNumber() {
+		return caseNumber;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public String getRegion() {
+		return region;
+	}
+
+	public String getApplicant() {
+		return applicant;
+	}
+
+	public String getDefendant() {
+		return defendant;
+	}
+	
+	
 }
