@@ -238,10 +238,14 @@ public class UrnIdentifierGeneration implements IdentifierGeneration {
 		
 		if(alias.getValue().equals("IT_COST")) return "stato:costituzione:1947-12-27";
 		
-		if(alias.getValue().equals("IT_COD_CIV")) return "stato:codice.civile:1942-03-16;262"; //stato:regio.decreto:1942-03-16;262
-		if(alias.getValue().equals("IT_COD_PEN")) return "stato:codice.penale:1930-10-19;1398";
-		if(alias.getValue().equals("IT_COD_PROC_CIV")) return "stato:codice.procedura.civile:1940-10-28;1443"; //stato:regio.decreto:1940-10-28;1443
-		if(alias.getValue().equals("IT_COD_PROC_PEN")) return "presidente.repubblica:codice.procedura.penale:1988-09-22;447"; //stato:decreto.del.presidente.della.repubblica:1988-09-22;447
+		//if(alias.getValue().equals("IT_COD_CIV")) return "stato:codice.civile:1942-03-16;262";
+		if(alias.getValue().equals("IT_COD_CIV")) return "stato:regio.decreto:1942-03-16;262:2";
+		//if(alias.getValue().equals("IT_COD_PEN")) return "stato:codice.penale:1930-10-19;1398";
+		if(alias.getValue().equals("IT_COD_PEN")) return "stato:regio.decreto:1930-10-19;1398:1";
+		//if(alias.getValue().equals("IT_COD_PROC_CIV")) return "stato:codice.procedura.civile:1940-10-28;1443";
+		if(alias.getValue().equals("IT_COD_PROC_CIV")) return "stato:regio.decreto:1940-10-28;1443";  // <--- a questo indirizzo non funzionano le partizioni
+		//if(alias.getValue().equals("IT_COD_PROC_PEN")) return "presidente.repubblica:codice.procedura.penale:1988-09-22;447";
+		if(alias.getValue().equals("IT_COD_PROC_PEN")) return "stato:decreto.del.presidente.della.repubblica:1988-09-22;447";
 		
 		/*
 		http://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1941-08-25;1368
