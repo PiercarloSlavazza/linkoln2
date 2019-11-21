@@ -26,7 +26,7 @@ import it.cnr.igsg.linkoln.service.impl.Util;
 public class Linkoln {
 
 	
-	public final static String VERSION = "2.1.3";
+	public final static String VERSION = "2.1.4";
 	
 	public static boolean DEBUG = false;
 

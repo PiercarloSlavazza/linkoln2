@@ -61,18 +61,20 @@ public final class LinkolnReference {
 		
 		this.type = entity.getClass().getSimpleName();
 		
-		this.authority = entity.getAuthority();
+		this.authority = entity.getAuthorityValue();
 		this.authoritySection = entity.getRelatedValue("CL_AUTH_SECTION");
 		this.detachedAuthority = entity.getRelatedValue("CL_DETACHED_SECTION");
-		this.docType = entity.getDocumentType();
+		
+		this.city = entity.getCity();
+		this.region = entity.getRelatedValue("REGION");
+
+		this.docType = entity.getDocumentTypeValue();
 		this.number = entity.getNumber();
 		this.year = entity.getYear();
 		this.date = entity.getRelatedValue("DATE");
 		this.caseNumber = entity.getRelatedValue("CASENUMBER");
-		this.city = entity.getRelatedValue("CITY");
-		this.region = entity.getRelatedValue("REGION");
-		this.applicant = entity.getRelatedValue("APPLICANT");
-		this.defendant = entity.getRelatedValue("DEFENDANT");
+		this.applicant = entity.getApplicant();
+		this.defendant = entity.getDefendant();
 	}
 
 	void addLinkolnIdentifier(LinkolnIdentifier linkolnIdentifier) {
@@ -91,56 +93,82 @@ public final class LinkolnReference {
 	}
 
 	public String getType() {
-		return type;
+		
+		if(type == null) return null;
+		if(type.trim().length() < 1) return null;
+		return type.trim();
 	}
 
 	public String getAuthority() {
-		return authority;
+		if(authority == null) return null;
+		if(authority.trim().length() < 1) return null;
+		return authority.trim();
 	}
 
 	public String getAuthoritySection() {
-		return authoritySection;
+		if(authoritySection == null) return null;
+		if(authoritySection.trim().length() < 1) return null;
+		return authoritySection.trim();
 	}
 
 	public String getDetachedAuthority() {
-		return detachedAuthority;
+		if(detachedAuthority == null) return null;
+		if(detachedAuthority.trim().length() < 1) return null;
+		return detachedAuthority.trim();
 	}
 
 	public String getDocType() {
-		return docType;
+		if(docType == null) return null;
+		if(docType.trim().length() < 1) return null;
+		return docType.trim();
 	}
 
 	public String getNumber() {
-		return number;
+		if(number == null) return null;
+		if(number.trim().length() < 1) return null;
+		return number.trim();
 	}
 
 	public String getYear() {
-		return year;
+		if(year == null) return null;
+		if(year.trim().length() < 1) return null;
+		return year.trim();
 	}
 
 	public String getDate() {
-		return date;
+		if(date == null) return null;
+		if(date.trim().length() < 1) return null;
+		return date.trim();
 	}
 
 	public String getCaseNumber() {
-		return caseNumber;
+		if(caseNumber == null) return null;
+		if(caseNumber.trim().length() < 1) return null;
+		return caseNumber.trim();
 	}
 
 	public String getCity() {
-		return city;
+		if(city == null) return null;
+		if(city.trim().length() < 1) return null;
+		return city.trim();
 	}
 
 	public String getRegion() {
-		return region;
+		if(region == null) return null;
+		if(region.trim().length() < 1) return null;
+		return region.trim();
 	}
 
 	public String getApplicant() {
-		return applicant;
+		if(applicant == null) return null;
+		if(applicant.trim().length() < 1) return null;
+		return applicant.trim();
 	}
 
 	public String getDefendant() {
-		return defendant;
+		if(defendant == null) return null;
+		if(defendant.trim().length() < 1) return null;
+		return defendant.trim();
 	}
-	
 	
 }

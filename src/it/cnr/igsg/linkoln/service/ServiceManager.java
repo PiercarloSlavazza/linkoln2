@@ -21,8 +21,6 @@ import java.util.ServiceLoader;
 
 import it.cnr.igsg.linkoln.Linkoln;
 import it.cnr.igsg.linkoln.service.impl.FinalizeAnnotations;
-import it.cnr.igsg.linkoln.service.impl.HtmlCsmRenderer;
-import it.cnr.igsg.linkoln.service.impl.HtmlDebugRenderer;
 import it.cnr.igsg.linkoln.service.impl.HtmlRenderer;
 import it.cnr.igsg.linkoln.service.impl.it.Abbreviations;
 import it.cnr.igsg.linkoln.service.impl.it.AddPartitionsToReferences;
@@ -137,6 +135,12 @@ public class ServiceManager {
 			services.add(new DocTypes());
 			services.add(new Subjects());
 			services.add(new Abbreviations());
+			/*
+			if(Util.token2code != null)	{
+				services.add(new Municipalities());
+				services.add(new ExtendAuthorities());
+			}
+			*/
 			services.add(new Vs());
 			services.add(new NamedEntities());
 			services.add(new Parties());
@@ -147,12 +151,12 @@ public class ServiceManager {
 			services.add(new ArticleNumbers());
 			services.add(new Partitions());
 			services.add(new AddPartitionsToReferences());
-			
 			services.add(new FinalizeAnnotations());
-			
 			services.add(new HtmlRenderer());
-			services.add(new HtmlDebugRenderer());
+			/*
+			if(Linkoln.HTML_DEBUG) services.add(new HtmlDebugRenderer());
 			services.add(new HtmlCsmRenderer());
+			*/
 		}
 	}
 	

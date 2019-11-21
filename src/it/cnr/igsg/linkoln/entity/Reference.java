@@ -101,41 +101,120 @@ public class Reference extends AnnotationEntity {
 		return false;
 	}
 	
-	public String getAuthority() {
+	public Authority getAuthority() {
 
 		AnnotationEntity entity = this.getRelatedEntity("CL_AUTH");
-		if(entity != null) return entity.getValue();
+		if(entity != null) return (CaseLawAuthority) entity;
 		
 		entity = this.getRelatedEntity("LEG_AUTH");
-		if(entity != null) return entity.getValue();
+		if(entity != null) return (LegislationAuthority) entity;
 		
 		entity = this.getRelatedEntity("EU_CL_AUTH");
-		if(entity != null) return entity.getValue();
+		if(entity != null) return (EuropeanCaseLawAuthority) entity;
 		
 		entity = this.getRelatedEntity("EU_LEG_AUTH");
-		if(entity != null) return entity.getValue();
+		if(entity != null) return (EuropeanLegislationAuthority) entity;
 		
 		return null;
 	}
 	
-	public String getDocumentType() {
+	public String getAuthorityValue() {
+		
+		Authority entity = getAuthority();
+		
+		if(entity == null) return null;
+		
+		return entity.getValue();
+	}
+	
+	public DocumentType getDocumentType() {
 		
 		AnnotationEntity entity = this.getRelatedEntity("CL_DOCTYPE");
-		if(entity != null) return entity.getValue();
+		if(entity != null) return (CaseLawDocumentType) entity;
 
 		entity = this.getRelatedEntity("LEG_DOCTYPE");
-		if(entity != null) return entity.getValue();
+		if(entity != null) return (LegislationDocumentType) entity;
 		
 		entity = this.getRelatedEntity("EU_LEG_DOCTYPE");
-		if(entity != null) return entity.getValue();
+		if(entity != null) return (EuropeanLegislationDocumentType) entity;
 		
 		entity = this.getRelatedEntity("DOCTYPE");
-		if(entity != null) return entity.getValue();
+		if(entity != null) return (DocumentType) entity;
 		
 		return null;
 	}
 	
+	public String getDocumentTypeValue() {
+		
+		DocumentType entity = getDocumentType();
+		
+		if(entity == null) return null;
+		
+		return entity.getValue();
+	}
 
+	public String getCity() {
+		
+		AnnotationEntity entity = this.getRelatedEntity("CITY");
+		
+		if(entity != null) {
+
+			return entity.getValue();
+		}
+		
+		//Look first in detached section then in authority
+		
+		AnnotationEntity auth = this.getRelatedEntity("CL_DETACHED_SECTION");
+		
+		if(auth == null) {
+			
+			auth = getAuthority();
+		}
+		
+		if(auth != null) {
+			
+			entity = auth.getRelatedEntity("CITY");
+			
+			if(entity != null) {
+
+				return entity.getValue();
+			}
+			
+			entity = auth.getRelatedEntity("MUNICIPALITY");
+			
+			if(entity != null) {
+
+				return entity.getValue();
+			}
+		}
+		
+		return null;
+	}
+	
+	public String getRegion() {
+		
+		AnnotationEntity entity = this.getRelatedEntity("REGION");
+		
+		if(entity != null) {
+
+			return entity.getValue();
+		}
+		
+		Authority auth = getAuthority();
+		
+		if(auth != null) {
+			
+			entity = auth.getRelatedEntity("REGION");
+			
+			if(entity != null) {
+
+				return entity.getValue();
+			}
+		}
+		
+		return null;
+	}
+	
 	public String getNumber() {
 		
 		AnnotationEntity entity = this.getRelatedEntity("NUMBER");
@@ -168,4 +247,38 @@ public class Reference extends AnnotationEntity {
 		return null;
 	}
 	
+	public String getApplicant() {
+
+		AnnotationEntity party = this.getRelatedEntity("PARTY");
+		
+		if(party != null) {
+			
+			AnnotationEntity applicant = party.getRelatedEntity("APPLICANT");
+			
+			if(applicant != null) {
+				
+				return applicant.getText();
+			}
+		}
+		
+		return null;
+	}
+	
+	public String getDefendant() {
+
+		AnnotationEntity party = this.getRelatedEntity("PARTY");
+		
+		if(party != null) {
+			
+			AnnotationEntity defendant = party.getRelatedEntity("DEFENDANT");
+			
+			if(defendant != null) {
+				
+				return defendant.getText();
+			}
+		}
+		
+		return null;
+	}
+
 }

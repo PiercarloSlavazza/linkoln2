@@ -115,7 +115,7 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 		}
 		
 		if(this instanceof LinkolnRenderingService) {
-			
+		
 			((LinkolnRenderingService) this).postProcess();
 		}
 

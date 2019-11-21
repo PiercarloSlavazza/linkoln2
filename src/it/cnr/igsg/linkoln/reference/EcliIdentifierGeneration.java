@@ -33,7 +33,7 @@ public class EcliIdentifierGeneration implements IdentifierGeneration {
 		//String urlPrefix = "https://e-justice.europa.eu/ecli/";  //Funziona meglio così: https://e-justice.europa.eu/ecli/it/ECLI:CODE.html 
 		String urlPrefix = "https://e-justice.europa.eu/ecli/it/";
 		
-		String auth = entity.getAuthority();
+		String auth = entity.getAuthorityValue();
 		String year = entity.getYear();
 		String number = entity.getNumber();
 		String subject = entity.getRelatedValue("SUBJECT");
