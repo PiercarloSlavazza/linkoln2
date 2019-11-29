@@ -51,6 +51,7 @@ import it.cnr.igsg.linkoln.service.impl.it.References;
 import it.cnr.igsg.linkoln.service.impl.it.ReferencesLaw;
 import it.cnr.igsg.linkoln.service.impl.it.RegionalCaseLawAuthorities;
 import it.cnr.igsg.linkoln.service.impl.it.RegionalLegislationAuthorities;
+import it.cnr.igsg.linkoln.service.impl.it.RvNumbers;
 import it.cnr.igsg.linkoln.service.impl.it.Sections;
 import it.cnr.igsg.linkoln.service.impl.it.Stopwords;
 import it.cnr.igsg.linkoln.service.impl.it.Subjects;
@@ -126,6 +127,7 @@ public class ServiceManager {
 			services.add(new Dates());
 			services.add(new JointCaseNumbers());
 			services.add(new CaseNumbers());
+			services.add(new RvNumbers());
 			services.add(new Numbers());
 			services.add(new Items());
 			services.add(new Journals());
@@ -135,12 +137,6 @@ public class ServiceManager {
 			services.add(new DocTypes());
 			services.add(new Subjects());
 			services.add(new Abbreviations());
-			/*
-			if(Util.token2code != null)	{
-				services.add(new Municipalities());
-				services.add(new ExtendAuthorities());
-			}
-			*/
 			services.add(new Vs());
 			services.add(new NamedEntities());
 			services.add(new Parties());
@@ -153,10 +149,6 @@ public class ServiceManager {
 			services.add(new AddPartitionsToReferences());
 			services.add(new FinalizeAnnotations());
 			services.add(new HtmlRenderer());
-			/*
-			if(Linkoln.HTML_DEBUG) services.add(new HtmlDebugRenderer());
-			services.add(new HtmlCsmRenderer());
-			*/
 		}
 	}
 	
