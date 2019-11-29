@@ -46,6 +46,7 @@ public final class LinkolnReference {
 	private String region = null;
 	private String applicant = null;
 	private String defendant = null;
+	private String subject = null;
 	
 	
 	private Collection<LinkolnIdentifier> linkolnIdentifiers = new ArrayList<LinkolnIdentifier>();
@@ -71,10 +72,11 @@ public final class LinkolnReference {
 		this.docType = entity.getDocumentTypeValue();
 		this.number = entity.getNumber();
 		this.year = entity.getYear();
-		this.date = entity.getRelatedValue("DATE");
+		this.date = entity.getRelatedValue("DOC_DATE");
 		this.caseNumber = entity.getRelatedValue("CASENUMBER");
 		this.applicant = entity.getApplicant();
 		this.defendant = entity.getDefendant();
+		this.subject = entity.getSubject();
 	}
 
 	void addLinkolnIdentifier(LinkolnIdentifier linkolnIdentifier) {
@@ -169,6 +171,12 @@ public final class LinkolnReference {
 		if(defendant == null) return null;
 		if(defendant.trim().length() < 1) return null;
 		return defendant.trim();
+	}
+	
+	public String getSubject() {
+		if(subject == null) return null;
+		if(subject.trim().length() < 1) return null;
+		return subject.trim();
 	}
 	
 }

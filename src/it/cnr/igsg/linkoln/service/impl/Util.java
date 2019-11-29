@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -29,9 +30,9 @@ public class Util {
 	
 	private static final Pattern digits = Pattern.compile("\\d+");
 
+	private static final String munFileName = "municipalities.txt";
 	
 	public static Map<String,String> token2code = null;
-	private static final File MUNICIPALITIES = new File("codiciTokenized.txt");
 	
 	public static boolean initMunicipalities() throws IOException {
 		
@@ -40,14 +41,30 @@ public class Util {
 			return false;
 		}
 		
-		if( !MUNICIPALITIES.exists()) {
+		File munFile = new File(munFileName);
+		
+		BufferedReader reader = null;
+		InputStream in = null;
+		
+		if( !munFile.exists()) {
 			
-			return false;
+			//Look for it as a resource in the jar file
+			Util util = new Util();
+			in = util.getClass().getResourceAsStream("/" + munFileName);
+			
+			if(in == null) {
+				return false;
+			}
+			
+			reader = new BufferedReader(new InputStreamReader(in));
+			
+		} else {
+			
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(munFile)));
 		}
 	
 		Util.token2code = new HashMap<String,String>();
 		
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(MUNICIPALITIES)));
 		String l = null;
 
 	    while( ( l = reader.readLine() ) != null ) {
@@ -58,7 +75,9 @@ public class Util {
 		
 			Util.token2code.put(namedEntity, code);
 	    }
-	    reader.close();   
+	    
+	    reader.close();  
+	    if(in != null) in.close();
 
 		return true;
 	}

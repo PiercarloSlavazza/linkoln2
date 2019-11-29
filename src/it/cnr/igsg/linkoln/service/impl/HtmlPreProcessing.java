@@ -2,11 +2,11 @@
 
 package it.cnr.igsg.linkoln.service.impl;
 
+import it.cnr.igsg.linkoln.HtmlAnnotation;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-
-import it.cnr.igsg.linkoln.HtmlAnnotation;
 
 
 /**
@@ -41,22 +41,22 @@ public class HtmlPreProcessing {
    * Translates characters to character classes
    */
   private static final String ZZ_CMAP_PACKED = 
-    "\11\0\1\0\1\0\1\0\1\0\1\0\22\0\1\0\1\0\4\0"+
-    "\1\0\1\0\1\0\1\0\2\0\1\0\1\0\1\0\1\4\1\0"+
-    "\1\0\1\0\3\0\2\0\1\0\1\0\1\0\1\0\1\5\1\0"+
-    "\1\6\2\0\1\0\1\1\1\0\1\0\1\0\1\0\1\0\1\0"+
-    "\1\0\1\0\1\0\1\0\1\0\1\0\1\0\1\2\1\0\1\3"+
-    "\1\0\1\0\1\0\1\0\1\0\1\0\1\0\1\0\1\0\1\0"+
-    "\1\0\1\0\1\0\1\0\1\0\1\1\1\0\1\0\1\0\1\0"+
-    "\1\0\1\0\1\0\1\0\1\0\1\0\1\0\1\0\1\0\1\2"+
-    "\1\0\1\3\1\0\1\0\1\0\1\0\1\0\1\0\1\0\1\0"+
+    "\11\0\1\11\1\2\1\0\1\11\1\1\22\0\1\11\1\0\4\0"+
+    "\1\3\1\0\1\0\1\0\2\0\1\0\1\0\1\0\1\13\1\0"+
+    "\1\0\1\0\3\0\2\0\1\0\1\0\1\0\1\10\1\14\1\0"+
+    "\1\15\2\0\1\0\1\5\1\0\1\0\1\0\1\0\1\0\1\0"+
+    "\1\0\1\0\1\0\1\0\1\0\1\4\1\0\1\7\1\0\1\12"+
+    "\1\6\1\0\1\0\1\0\1\0\1\0\1\0\1\0\1\0\1\0"+
+    "\1\0\1\0\1\0\1\0\1\0\1\5\1\0\1\0\1\0\1\0"+
+    "\1\0\1\0\1\0\1\0\1\0\1\0\1\0\1\4\1\0\1\7"+
+    "\1\0\1\12\1\6\1\0\1\0\1\0\1\0\1\0\1\0\1\0"+
     "\71\0\1\0\13\0\1\0\1\0\4\0\1\0\1\0\1\0\1\0"+
     "\2\0\1\0\1\0\2\0\1\0\1\0\1\0\1\0\3\0\2\0"+
     "\1\0\1\0\2\0\3\0\1\0\1\0\4\0\1\0\1\0\1\0"+
     "\1\0\2\0\1\0\1\0\2\0\1\0\1\0\1\0\1\0\3\0"+
     "\2\0\1\0\1\0\2\0\53\0\1\0\1\0\6\0\2\0\66\0"+
-    "\1\0\1\0\4\0\1\0\1\0\17\0\1\0\u1c88\0\1\0\1\0"+
-    "\216\0\2\0\42\0\1\0\1\0\u0144\0\1\0\20\0\1\0\1\0"+
+    "\1\0\1\0\4\0\1\0\1\0\17\0\1\6\u1c88\0\1\0\1\0"+
+    "\216\0\2\0\42\0\1\0\1\0\u0144\0\1\11\20\0\1\0\1\0"+
     "\4\0\1\0\u0110\0\1\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udee5\0";
 
   /** 
@@ -70,10 +70,11 @@ public class HtmlPreProcessing {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\3\0\2\1\2\2\1\3\4\0\1\4\1\0\1\5";
+    "\3\0\6\1\2\2\1\3\1\4\1\5\16\0\1\6"+
+    "\1\0\1\7\15\0";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[15];
+    int [] result = new int[44];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -98,11 +99,15 @@ public class HtmlPreProcessing {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\7\0\16\0\25\0\34\0\25\0\43\0\25"+
-    "\0\52\0\61\0\70\0\77\0\25\0\106\0\25";
+    "\0\0\0\16\0\34\0\52\0\70\0\106\0\124\0\142"+
+    "\0\160\0\52\0\176\0\52\0\214\0\232\0\250\0\106"+
+    "\0\266\0\70\0\124\0\142\0\304\0\322\0\340\0\356"+
+    "\0\374\0\u010a\0\u0118\0\u0126\0\52\0\u0134\0\52\0\u0142"+
+    "\0\u0150\0\u015e\0\u016c\0\u017a\0\u0188\0\u0196\0\u01a4\0\u01b2"+
+    "\0\u01c0\0\u01ce\0\u01dc\0\u01ea";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[15];
+    int [] result = new int[44];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -125,13 +130,22 @@ public class HtmlPreProcessing {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\5\4\1\5\1\4\5\6\1\7\1\6\7\10\7\0"+
-    "\6\11\2\0\1\12\1\13\1\0\1\14\2\0\6\11"+
-    "\1\15\3\0\1\16\3\0\6\13\1\17\1\0\1\12"+
-    "\1\13\12\0\1\17";
+    "\1\4\1\5\1\6\1\7\5\4\1\10\2\4\1\11"+
+    "\1\4\14\12\1\13\1\12\16\14\17\0\1\15\1\16"+
+    "\1\17\5\0\1\20\5\0\2\15\1\17\5\0\1\20"+
+    "\10\0\1\21\12\0\1\22\1\20\1\23\5\0\1\24"+
+    "\4\0\15\25\6\0\1\26\1\0\1\27\3\0\1\30"+
+    "\3\0\2\15\1\31\5\0\1\15\5\0\2\15\1\32"+
+    "\5\0\1\16\10\0\1\33\16\0\1\34\10\0\15\25"+
+    "\1\35\12\0\1\36\3\0\15\27\1\37\5\0\1\26"+
+    "\1\0\1\27\12\0\1\40\15\0\1\41\16\0\1\42"+
+    "\16\0\1\43\24\0\1\37\5\0\1\44\15\0\1\45"+
+    "\16\0\1\46\16\0\1\47\14\0\1\50\15\0\1\51"+
+    "\16\0\1\52\16\0\1\24\14\0\1\53\15\0\1\54"+
+    "\16\0\1\20\15\0\1\15\15\0\1\16\5\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[77];
+    int [] result = new int[504];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -169,11 +183,11 @@ public class HtmlPreProcessing {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\3\0\1\11\1\1\1\11\1\1\1\11\4\0\1\11"+
-    "\1\0\1\11";
+    "\3\0\1\11\5\1\1\11\1\1\1\11\2\1\16\0"+
+    "\1\11\1\0\1\11\15\0";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[15];
+    int [] result = new int[44];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -671,7 +685,7 @@ public class HtmlPreProcessing {
 	position++;
             } 
             // fall through
-          case 6: break;
+          case 8: break;
           case 2: 
             { offset++;
 
@@ -688,13 +702,26 @@ public class HtmlPreProcessing {
 		ha.html.append(yytext());
             } 
             // fall through
-          case 7: break;
+          case 9: break;
           case 3: 
             { System.out.print(yytext());
             } 
             // fall through
-          case 8: break;
+          case 10: break;
           case 4: 
+            { text.append("[LKN:BREAK::0][/LKN]");
+	text.append(yytext());
+	position += yylength();
+            } 
+            // fall through
+          case 11: break;
+          case 5: 
+            { text.append(yytext());
+	position += yylength();
+            } 
+            // fall through
+          case 12: break;
+          case 6: 
             { if(contents.size() == 0 || !isHtml) {
 	
 		ha = new HtmlAnnotation();
@@ -714,14 +741,14 @@ public class HtmlPreProcessing {
 	yybegin(inHtmlTag);
             } 
             // fall through
-          case 9: break;
-          case 5: 
+          case 13: break;
+          case 7: 
             { addBreak = true;
 		offset += yylength();
 		ha.html.append(yytext());
             } 
             // fall through
-          case 10: break;
+          case 14: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }

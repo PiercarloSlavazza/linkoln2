@@ -94,7 +94,7 @@ public class CelexIdentifierGeneration implements IdentifierGeneration {
         
         if(celexYear.equals("")) {
         	
-        		AnnotationEntity date = entity.getRelatedEntity("DATE");
+        		AnnotationEntity date = entity.getRelatedEntity("DOC_DATE");
         		
         		if(date != null && date.getRelatedEntity("YEAR") != null) {
         			

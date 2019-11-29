@@ -21,7 +21,10 @@ import java.util.ServiceLoader;
 
 import it.cnr.igsg.linkoln.Linkoln;
 import it.cnr.igsg.linkoln.service.impl.FinalizeAnnotations;
+import it.cnr.igsg.linkoln.service.impl.HtmlCsmRenderer;
+import it.cnr.igsg.linkoln.service.impl.HtmlDebugRenderer;
 import it.cnr.igsg.linkoln.service.impl.HtmlRenderer;
+import it.cnr.igsg.linkoln.service.impl.Util;
 import it.cnr.igsg.linkoln.service.impl.it.Abbreviations;
 import it.cnr.igsg.linkoln.service.impl.it.AddPartitionsToReferences;
 import it.cnr.igsg.linkoln.service.impl.it.AliasPartitions;
@@ -35,6 +38,7 @@ import it.cnr.igsg.linkoln.service.impl.it.Commas;
 import it.cnr.igsg.linkoln.service.impl.it.Dates;
 import it.cnr.igsg.linkoln.service.impl.it.DetachedSections;
 import it.cnr.igsg.linkoln.service.impl.it.DocTypes;
+import it.cnr.igsg.linkoln.service.impl.it.ExtendAuthorities;
 import it.cnr.igsg.linkoln.service.impl.it.Geos;
 import it.cnr.igsg.linkoln.service.impl.it.Items;
 import it.cnr.igsg.linkoln.service.impl.it.JointCaseNumbers;
@@ -42,6 +46,7 @@ import it.cnr.igsg.linkoln.service.impl.it.Journals;
 import it.cnr.igsg.linkoln.service.impl.it.LegislationAuthorities;
 import it.cnr.igsg.linkoln.service.impl.it.Letters;
 import it.cnr.igsg.linkoln.service.impl.it.Ministries;
+import it.cnr.igsg.linkoln.service.impl.it.Municipalities;
 import it.cnr.igsg.linkoln.service.impl.it.NamedEntities;
 import it.cnr.igsg.linkoln.service.impl.it.NationalAuthorities;
 import it.cnr.igsg.linkoln.service.impl.it.Numbers;
@@ -137,9 +142,20 @@ public class ServiceManager {
 			services.add(new DocTypes());
 			services.add(new Subjects());
 			services.add(new Abbreviations());
+			
+			if(Util.token2code != null)	{
+				services.add(new Municipalities());
+				services.add(new ExtendAuthorities());
+			}
+			
+			//Patch docTypes <-> authorities
+			
 			services.add(new Vs());
 			services.add(new NamedEntities());
 			services.add(new Parties());
+			
+			//Patch between potential references and other patches
+
 			services.add(new ReferencesLaw());
 			services.add(new References());
 			services.add(new AliasPartitions());
@@ -149,6 +165,10 @@ public class ServiceManager {
 			services.add(new AddPartitionsToReferences());
 			services.add(new FinalizeAnnotations());
 			services.add(new HtmlRenderer());
+			
+			if(Linkoln.HTML_DEBUG) services.add(new HtmlDebugRenderer());
+			services.add(new HtmlCsmRenderer());
+			
 		}
 	}
 	

@@ -68,13 +68,13 @@ public class GazzettaUfficialeIdentifierGeneration implements IdentifierGenerati
 		
 		//TODO VEDERE COME GESTIRE I SUPPLEMENTI -altro parametro?
 		
-		if(entity.getRelatedEntity("NUMBER") == null || entity.getRelatedEntity("DATE") == null) {
+		if(entity.getRelatedEntity("NUMBER") == null || entity.getRelatedEntity("DOC_DATE") == null) {
 			
 			return "";
 		}
 		
 		String guNumber = entity.getRelatedEntity("NUMBER").getValue();
-		String guDate = entity.getRelatedEntity("DATE").getValue();
+		String guDate = entity.getRelatedEntity("DOC_DATE").getValue();
 		
 		return "http://www.gazzettaufficiale.it/gazzetta/serie_generale/caricaDettaglio?dataPubblicazioneGazzetta=" + guDate + "&numeroGazzetta=" + guNumber;
 	}

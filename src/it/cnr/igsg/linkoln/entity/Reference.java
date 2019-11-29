@@ -237,7 +237,7 @@ public class Reference extends AnnotationEntity {
 			if(year != null) return year.getValue();
 		}
 		
-		entity = this.getRelatedEntity("DATE");
+		entity = this.getRelatedEntity("DOC_DATE");
 		if(entity != null) {
 			
 			AnnotationEntity year = entity.getRelatedEntity("YEAR");
@@ -281,4 +281,27 @@ public class Reference extends AnnotationEntity {
 		return null;
 	}
 
+	public String getSubject() {
+		
+		AnnotationEntity entity = this.getRelatedEntity("SUBJECT");
+		
+		if(entity != null) {
+			
+			return entity.getValue();
+		}
+		
+		AnnotationEntity caseNum = this.getRelatedEntity("CASENUMBER");
+		
+		if(caseNum != null) {
+			
+			entity = caseNum.getRelatedEntity("SUBJECT");
+			
+			if(entity != null) {
+				
+				return entity.getValue();
+			}
+		}
+		
+		return null;
+	}
 }

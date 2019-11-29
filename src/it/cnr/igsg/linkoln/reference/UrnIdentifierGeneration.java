@@ -71,7 +71,7 @@ public class UrnIdentifierGeneration implements IdentifierGeneration {
 		
 		AnnotationEntity year = null;
 		
-		AnnotationEntity date = entity.getRelatedEntity("DATE");
+		AnnotationEntity date = entity.getRelatedEntity("DOC_DATE");
 		
 		AnnotationEntity partition = entity.getRelatedEntity("LEG_PARTITION");
 		
@@ -402,6 +402,7 @@ public class UrnIdentifierGeneration implements IdentifierGeneration {
 		if(alias.getValue().equals("IT_TU_IMP_REDDITO")) return "presidente.repubblica:decreto:1986-12-22;917";
 		if(alias.getValue().equals("IT_TU_SEQUESTRO")) return "presidente.repubblica:decreto:1950-01-05;180";
 		if(alias.getValue().equals("IT_TU_IMPIEGATI")) return "presidente.repubblica:decreto:1957-03-30;3";
+		if(alias.getValue().equals("IT_TU_BANCARIO")) return "stato:decreto_legislativo:1993-09-01;385";
 		
 		
 /*
@@ -438,9 +439,6 @@ public class UrnIdentifierGeneration implements IdentifierGeneration {
 
 {TuImpIpo}(({S}?{Dash}?{S}?{TuImpIpo})|({S}?[\(]{S}?{TuImpIpo}{S}?[\)]))?
 	{ saveAlias(yytext(), "stato", "decreto.legislativo", "31101990", "347"); }
-
-{TuBancaria}(({S}?{Dash}?{S}?{TuBancaria})|({S}?[\(]{S}?{TuBancaria}{S}?[\)]))?
-	{ saveAlias(yytext(), "stato", "decreto.legislativo", "01091993", "385"); }
 
 {TuSenato}(({S}?{Dash}?{S}?{TuSenato})|({S}?[\(]{S}?{TuSenato}{S}?[\)]))?
 	{ saveAlias(yytext(), "stato", "decreto.legislativo", "20121993", "533"); }
@@ -481,7 +479,7 @@ public class UrnIdentifierGeneration implements IdentifierGeneration {
 */
 		
 		
-		if(alias.getValue().equals("IT_LEGGE_FALL")) return "stato:regio.decreto:1942-03-16;267";
+		if(alias.getValue().equals("IT_LEGGE_FALL")) return "stato:regio.decreto:1942-03-16;267:1";
 		
 		if(alias.getValue().equals("IT_LEGGE_FIN_2002")) return "stato:legge:2001-12-28;448";
 		if(alias.getValue().equals("IT_LEGGE_FIN_2003")) return "stato:legge:2002-12-27;289";

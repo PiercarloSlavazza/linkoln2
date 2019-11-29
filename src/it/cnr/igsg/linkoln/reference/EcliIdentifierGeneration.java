@@ -58,8 +58,8 @@ public class EcliIdentifierGeneration implements IdentifierGeneration {
 			
 			if(subject != null) {
 
-				if(subject.toUpperCase().startsWith("C")) subject = "CIV";
-				if(subject.toUpperCase().startsWith("P")) subject = "PEN";
+				if(subject.equals("CIVIL")) subject = "CIV";
+				if(subject.equals("CRIMINAL")) subject = "PEN";
 			
 			} else if( !linkolnDocument.getSector().equals("")) {
 				
