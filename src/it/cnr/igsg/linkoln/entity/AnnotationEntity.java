@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import it.cnr.igsg.linkoln.service.impl.Util;
+
 
 public abstract class AnnotationEntity {
 
@@ -35,7 +37,18 @@ public abstract class AnnotationEntity {
 	}
 
 	public void setValue(String value) {
-		this.value = value;
+		
+		//Sono permessi soltanto valori composti dai caratteri: [A-Z] [0-9] "_" "-"
+		value = value.toUpperCase().replaceAll("\n", "").replaceAll("\r", "").trim();
+
+		if( !Util.checkValue(value)) {
+			
+			System.err.println("checkValue() fails! value: " + value + " (" + this.getClass().getName() + ") pos:" + this.getPosition() + " text:" + this.getText());
+			
+		} else {
+		
+			this.value = value;
+		}
 	}
 
 	public final String getRelatedValue(String relatedEntityName) {

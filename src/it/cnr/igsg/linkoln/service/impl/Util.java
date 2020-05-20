@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -30,7 +31,7 @@ public class Util {
 	
 	private static final Pattern digits = Pattern.compile("\\d+");
 
-	private static final String munFileName = "municipalities.txt";
+	private static final String munFileName = "data/municipalities.txt";
 	
 	public static Map<String,String> token2code = null;
 	
@@ -68,6 +69,8 @@ public class Util {
 		String l = null;
 
 	    while( ( l = reader.readLine() ) != null ) {
+	    	
+	    	if(l.startsWith("/*") || l.startsWith("*") || l.startsWith(" *") || l.startsWith("#")) continue;
 
 			int split = l.indexOf(" ");
 			String code = l.substring(0, split).trim();
@@ -84,6 +87,8 @@ public class Util {
 	
 	public static final String readFirstNumber(String text) {
 	
+		if(text == null) return null;
+		
 		Matcher matcher = digits.matcher(text);
 		String number = "";
 		
@@ -91,6 +96,24 @@ public class Util {
 			
 			number = text.substring(matcher.start(), matcher.end());			
 			break;
+		}
+		
+		return number;
+	}
+
+	public static final String readSecondNumber(String text) {
+		
+		if(text == null) return null;
+		
+		Matcher matcher = digits.matcher(text);
+		String number = "";
+		
+		boolean first = false;
+		while(matcher.find()) {
+			
+			number = text.substring(matcher.start(), matcher.end());
+			if(first) break;
+			first = true;
 		}
 		
 		return number;
@@ -127,7 +150,27 @@ public class Util {
 		
 		return ac.getOutput();
 	}
+	
+	public static final boolean checkValue(String text) {
+		
+		ValueChecker vc = new ValueChecker();
+		
+		try {
+			
+			vc.yyreset(new StringReader(text));
+			
+			vc.yylex();
+			
+		} catch (IOException e) {
 
+			e.printStackTrace();
+			
+			return false;
+		}
+		
+		return vc.isAllowed();
+	}
+	
 	public static final String tokenize(String text) {
 		
 		Tokenizer t = new Tokenizer();
@@ -227,6 +270,69 @@ public class Util {
 		}
 		
 		return year;
+	}
+
+	public static String stripAccents(String s) {
+		
+		s = Normalizer.normalize(s, Normalizer.Form.NFD);
+		s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+		return s;
+	}
+	
+	public static String getTwoLettersCountryCode(String threeLettersCountryCode) {
+		
+		String country = threeLettersCountryCode;
+		
+		if(country.equals("AUT")) return "AT";
+		if(country.equals("BEL")) return "BE";
+		if(country.equals("BGR")) return "BG";
+		if(country.equals("HRV")) return "HR";
+		if(country.equals("CYP")) return "CY";
+		if(country.equals("CZE")) return "CZ";
+		if(country.equals("DNK")) return "DK";
+		if(country.equals("EST")) return "EE";
+		if(country.equals("FIN")) return "FI";
+		if(country.equals("FRA")) return "FR";
+		if(country.equals("DEU")) return "DE";
+		if(country.equals("GRC")) return "GR";
+		if(country.equals("ITA")) return "IT";
+		if(country.equals("IRL")) return "IE";
+		if(country.equals("ITA")) return "IT";
+		if(country.equals("LVA")) return "LV";
+		if(country.equals("LTU")) return "LT";
+		if(country.equals("LUX")) return "LU";
+		if(country.equals("MLT")) return "MT";
+		if(country.equals("NLD")) return "NL";
+		if(country.equals("POL")) return "PL";
+		if(country.equals("PRT")) return "PT";
+		if(country.equals("ROU")) return "RO";
+		if(country.equals("SVK")) return "SK";
+		if(country.equals("SVN")) return "SI";
+		if(country.equals("ESP")) return "ES";
+		if(country.equals("SWE")) return "SE";
+		if(country.equals("GBR")) return "GB";
+		if(country.equals("ALB")) return "AL";
+		if(country.equals("AND")) return "AD";
+		if(country.equals("ARM")) return "AM";
+		if(country.equals("AZE")) return "AZ";
+		if(country.equals("BIH")) return "BA";
+		if(country.equals("GEO")) return "GE";
+		if(country.equals("ISL")) return "IS";
+		if(country.equals("LIE")) return "LI";
+		if(country.equals("MKD")) return "MK";
+		if(country.equals("MCO")) return "MC";
+		if(country.equals("MNE")) return "ME";
+		if(country.equals("NOR")) return "NO";
+		if(country.equals("MDA")) return "MD";
+		if(country.equals("RUS")) return "RU";
+		if(country.equals("SMR")) return "SM";
+		if(country.equals("SRB")) return "RS";
+		if(country.equals("CHE")) return "CH";
+		if(country.equals("TUR")) return "TR";
+		if(country.equals("UKR")) return "UA";
+		if(country.equals("BLR")) return "BY";
+		
+		return "";
 	}
 	
 }

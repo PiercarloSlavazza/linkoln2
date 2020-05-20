@@ -48,10 +48,14 @@ public class EuropeanEliIdentifierGeneration implements IdentifierGeneration {
 		String year = "";
 		String type = "";
 		
+		/*
 		AnnotationEntity docType = entity.getRelatedEntity("EU_LEG_DOCTYPE");
 	        
 		if(docType == null) docType = entity.getRelatedEntity("LEG_DOCTYPE");
-		if(docType == null) docType = entity.getRelatedEntity("DOCTYPE");    
+		if(docType == null) docType = entity.getRelatedEntity("DOCTYPE");  
+		*/  
+		
+		AnnotationEntity docType = entity.getDocumentType();
 		if(docType == null) return null;
 
 		if(docType.getValue().equals("DIRECTIVE")) type = "dir";
@@ -60,7 +64,8 @@ public class EuropeanEliIdentifierGeneration implements IdentifierGeneration {
 		
 		if(type.equals("")) return null;
 		
-		AnnotationEntity numberEntity = entity.getRelatedEntity("NUMBER");
+		//AnnotationEntity numberEntity = entity.getRelatedEntity("NUMBER");
+		AnnotationEntity numberEntity = entity.getNumber();
 
 		if(numberEntity == null) return null;
 		

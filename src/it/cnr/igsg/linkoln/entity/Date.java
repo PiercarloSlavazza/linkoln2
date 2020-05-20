@@ -16,11 +16,4 @@ package it.cnr.igsg.linkoln.entity;
 
 public abstract class Date extends AnnotationEntity {
 
-	/*
-	@Override
-	public String getEntityName() {
-		
-		return "DATE";
-	}
-	*/
 }

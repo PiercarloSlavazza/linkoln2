@@ -17,12 +17,12 @@ package it.cnr.igsg.linkoln.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.ServiceLoader;
 
 import it.cnr.igsg.linkoln.Linkoln;
+import it.cnr.igsg.linkoln.service.impl.ClusterService;
+import it.cnr.igsg.linkoln.service.impl.FarAuthorityService;
 import it.cnr.igsg.linkoln.service.impl.FinalizeAnnotations;
-import it.cnr.igsg.linkoln.service.impl.HtmlCsmRenderer;
-import it.cnr.igsg.linkoln.service.impl.HtmlDebugRenderer;
+import it.cnr.igsg.linkoln.service.impl.HtmlBoldRenderer;
 import it.cnr.igsg.linkoln.service.impl.HtmlRenderer;
 import it.cnr.igsg.linkoln.service.impl.Util;
 import it.cnr.igsg.linkoln.service.impl.it.Abbreviations;
@@ -30,6 +30,7 @@ import it.cnr.igsg.linkoln.service.impl.it.AddPartitionsToReferences;
 import it.cnr.igsg.linkoln.service.impl.it.AliasPartitions;
 import it.cnr.igsg.linkoln.service.impl.it.AliasReferences;
 import it.cnr.igsg.linkoln.service.impl.it.Aliases;
+import it.cnr.igsg.linkoln.service.impl.it.AliasesExtended;
 import it.cnr.igsg.linkoln.service.impl.it.ArticleNumbers;
 import it.cnr.igsg.linkoln.service.impl.it.Articles;
 import it.cnr.igsg.linkoln.service.impl.it.CaseLawAuthorities;
@@ -39,6 +40,7 @@ import it.cnr.igsg.linkoln.service.impl.it.Dates;
 import it.cnr.igsg.linkoln.service.impl.it.DetachedSections;
 import it.cnr.igsg.linkoln.service.impl.it.DocTypes;
 import it.cnr.igsg.linkoln.service.impl.it.ExtendAuthorities;
+import it.cnr.igsg.linkoln.service.impl.it.FullStops;
 import it.cnr.igsg.linkoln.service.impl.it.Geos;
 import it.cnr.igsg.linkoln.service.impl.it.Items;
 import it.cnr.igsg.linkoln.service.impl.it.JointCaseNumbers;
@@ -50,6 +52,7 @@ import it.cnr.igsg.linkoln.service.impl.it.Municipalities;
 import it.cnr.igsg.linkoln.service.impl.it.NamedEntities;
 import it.cnr.igsg.linkoln.service.impl.it.NationalAuthorities;
 import it.cnr.igsg.linkoln.service.impl.it.Numbers;
+import it.cnr.igsg.linkoln.service.impl.it.PartialReferences;
 import it.cnr.igsg.linkoln.service.impl.it.Parties;
 import it.cnr.igsg.linkoln.service.impl.it.Partitions;
 import it.cnr.igsg.linkoln.service.impl.it.References;
@@ -57,6 +60,7 @@ import it.cnr.igsg.linkoln.service.impl.it.ReferencesLaw;
 import it.cnr.igsg.linkoln.service.impl.it.RegionalCaseLawAuthorities;
 import it.cnr.igsg.linkoln.service.impl.it.RegionalLegislationAuthorities;
 import it.cnr.igsg.linkoln.service.impl.it.RvNumbers;
+import it.cnr.igsg.linkoln.service.impl.it.SectionSubjects;
 import it.cnr.igsg.linkoln.service.impl.it.Sections;
 import it.cnr.igsg.linkoln.service.impl.it.Stopwords;
 import it.cnr.igsg.linkoln.service.impl.it.Subjects;
@@ -65,111 +69,80 @@ import it.cnr.igsg.linkoln.service.impl.it.Vs;
 
 public class ServiceManager {
 
-	//Java Service Provider Interface - Service loader
-	private ServiceLoader<LinkolnService> LinkolnServiceLoader = null;
-	
 	private Collection<LinkolnService> services = null;
 	
-
 	
-	//singleton pattern	
-	private static ServiceManager serviceManager = null;
-	
-	public static ServiceManager getInstance() {
-		
-		if(serviceManager == null) {
-			
-			serviceManager = new ServiceManager();
-		}
-		
-		return serviceManager;
-	}
-	
-	private ServiceManager() {
+	public ServiceManager() {
 		
 		services = new ArrayList<LinkolnService>();
 		
 		initServices();
 	}
 	
-	
-	/*
-	 * Init every available service implementation once.
-	 */
 	private void initServices() {
-		
-		LinkolnServiceLoader = ServiceLoader.load(LinkolnService.class);
-		
-		int counter = 0;
-		
-		for(LinkolnService service : LinkolnServiceLoader) {
-			
-			if( !service.language().equalsIgnoreCase("it")) continue;
-			
-			if(Linkoln.DEBUG) System.out.println("Loading Service " + service.getDescription());
-			
-			counter++;
-			service.setIndex(counter);
 
-			services.add(service);
-		}
+		//Manually add services -- Do not use SPI for the moment
 		
-		if(counter == 0) {
-			
-			//Manually add services -- Do not use SPI for the moment
-			
-			services.add(new Articles());
-			services.add(new Commas());
-			services.add(new Letters()); //Must run before stopwords (lettera a comma 1)
-			services.add(new Stopwords());
-			services.add(new Geos());
-			services.add(new DetachedSections());
-			services.add(new CaseLawAuthorities());
-			services.add(new Sections());
-			services.add(new LegislationAuthorities());
-			services.add(new RegionalCaseLawAuthorities());
-			services.add(new RegionalLegislationAuthorities());
-			services.add(new Dates());
-			services.add(new JointCaseNumbers());
-			services.add(new CaseNumbers());
-			services.add(new RvNumbers());
-			services.add(new Numbers());
-			services.add(new Items());
-			services.add(new Journals());
-			services.add(new Aliases());	
-			services.add(new Ministries());
-			services.add(new NationalAuthorities());
-			services.add(new DocTypes());
-			services.add(new Subjects());
-			services.add(new Abbreviations());
-			
-			if(Util.token2code != null)	{
-				services.add(new Municipalities());
-				services.add(new ExtendAuthorities());
-			}
-			
-			//Patch docTypes <-> authorities
-			
-			services.add(new Vs());
-			services.add(new NamedEntities());
-			services.add(new Parties());
-			
-			//Patch between potential references and other patches
+		services.add(new Articles());
+		services.add(new Commas());
+		services.add(new Letters()); //Must run before stopwords (lettera a comma 1)
+		
+		services.add(new Stopwords());
+		
+		services.add(new Geos());
+		services.add(new DetachedSections());
+		services.add(new CaseLawAuthorities());
+		services.add(new Sections());
+		services.add(new SectionSubjects());
+		services.add(new LegislationAuthorities());
+		services.add(new RegionalCaseLawAuthorities());
+		services.add(new RegionalLegislationAuthorities());
+		
+		services.add(new Dates());
+		services.add(new JointCaseNumbers());
+		services.add(new CaseNumbers());
+		services.add(new RvNumbers());
+		services.add(new Numbers());
+		//services.add(new Items());  //Spostato dopo Aliases per nuova regola basata su LKN_ALIAS
+		
+		services.add(new Journals());
+		
+		services.add(new Aliases());
+		services.add(new AliasesExtended());
+		services.add(new Items());
+		services.add(new Aliases()); //Run it again (TODO: only in case AliasExtended has produced some changes)
+		services.add(new Ministries());
+		services.add(new NationalAuthorities());
+		
+		services.add(new DocTypes());
+		services.add(new Subjects());
+		
+		services.add(new Abbreviations());
+		
+		if(Util.token2code != null)	services.add(new Municipalities());
+		if(Util.token2code != null)	services.add(new ExtendAuthorities());
+		
+		services.add(new Vs());
+		services.add(new NamedEntities());
+		services.add(new Parties());
+		
+		services.add(new ReferencesLaw());
+		services.add(new References());
+		if(Linkoln.CLUSTERING || Linkoln.FAR_AUTH) services.add(new PartialReferences());
+		services.add(new AliasPartitions());
+		services.add(new AliasReferences());
+		services.add(new ArticleNumbers());
+		services.add(new Partitions());
+		services.add(new AddPartitionsToReferences());
+		if(Linkoln.FAR_AUTH) services.add(new FullStops());
+		if(Linkoln.FAR_AUTH) services.add(new FarAuthorityService());
+		if(Linkoln.CLUSTERING) services.add(new ClusterService());
 
-			services.add(new ReferencesLaw());
-			services.add(new References());
-			services.add(new AliasPartitions());
-			services.add(new AliasReferences());
-			services.add(new ArticleNumbers());
-			services.add(new Partitions());
-			services.add(new AddPartitionsToReferences());
-			services.add(new FinalizeAnnotations());
-			services.add(new HtmlRenderer());
-			
-			if(Linkoln.HTML_DEBUG) services.add(new HtmlDebugRenderer());
-			services.add(new HtmlCsmRenderer());
-			
-		}
+		services.add(new FinalizeAnnotations());
+		
+		services.add(new HtmlRenderer());
+		services.add(new HtmlBoldRenderer());
+
 	}
 	
 	/*

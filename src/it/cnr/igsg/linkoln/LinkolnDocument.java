@@ -28,12 +28,17 @@ import it.cnr.igsg.linkoln.entity.AnnotationEntity;
 import it.cnr.igsg.linkoln.reference.LinkolnReference;
 import it.cnr.igsg.linkoln.service.LinkolnAnnotationService;
 import it.cnr.igsg.linkoln.service.LinkolnRenderingService;
+import it.cnr.igsg.linkoln.service.impl.HtmlCleanCommentsPreProcessing;
+import it.cnr.igsg.linkoln.service.impl.HtmlCleanPreProcessing;
 import it.cnr.igsg.linkoln.service.impl.HtmlPreProcessing;
 
 public class LinkolnDocument {
 
 
 	/* TODO Ogni text deve avere associata una lingua. Si possono avere più text in lingue diverse nello stesso linkolnDocument */
+	
+	
+	public Set<String> auths = new HashSet<String>();
 	
 	
 	/*
@@ -51,6 +56,8 @@ public class LinkolnDocument {
 	private String originalText = "";
 	
 	private String finalAnnotationsText = ""; //text after Finalize linkoln annotations service
+	
+	private String testoNonAnnotato = ""; //testo non incluso nei tag [LKN]
 
 	public void setFinalAnnotationsText(String finalAnnotationsText) {
 		
@@ -62,6 +69,16 @@ public class LinkolnDocument {
 		return finalAnnotationsText;
 	}
 	
+	public void setTestoNonAnnotato(String testoNonAnnotato) {
+		
+		this.testoNonAnnotato = testoNonAnnotato;
+	}
+	
+	public String getTestoNonAnnotato() {
+		
+		return testoNonAnnotato;
+	}
+	
 	public ArrayList<Object> originalContents = new ArrayList<Object>(); //TODO use ServiceBus / LinkolnPipeline
 	
 	public Set<Integer> htmlCuts = new HashSet<Integer>();
@@ -70,6 +87,29 @@ public class LinkolnDocument {
 	
 	private Collection<LinkolnReference> linkolnReferences = new ArrayList<LinkolnReference>();
 	
+	private ArrayList<Integer> fullStops = new ArrayList<Integer>(); //Si assume che sono aggiunti in ordine di occorrenza nel testo dal servizio apposito
+	
+	public void addFullStop(Integer fs) {
+		
+		if(fs != null)
+			this.fullStops.add(fs);
+	}
+	
+	public int getPreviousFullStop(int position) {
+		
+		int fullStop = -1;
+		
+		for(Integer fs : fullStops) {
+			
+			if(fs < position) 
+				fullStop = fs;
+			else
+				break;
+		}
+		
+		
+		return fullStop;
+	}
 	
 	/*
 	 * Metadati dell'atto
@@ -140,8 +180,13 @@ public class LinkolnDocument {
 	public void setText(String text) {
 		
 		this.originalText = text;
-				
+		
 		htmlPreProcessing();
+	}
+	
+	public String getOriginalText() {
+		
+		return this.originalText;
 	}
 
 	//Initialize "originalContents", "cuts" and set plainText
@@ -152,11 +197,49 @@ public class LinkolnDocument {
 			isPlainText = false;
 		}
 		
+		HtmlCleanCommentsPreProcessing hccpp = new HtmlCleanCommentsPreProcessing();
+		
+		try {
+			
+			hccpp.yyreset(new StringReader(originalText));
+			
+			hccpp.yylex();
+			
+		} catch (IOException e) {
+
+			e.printStackTrace();
+			
+			return;
+		}
+		
+		String processedOriginalText = hccpp.getOutput();
+		
+		//System.out.println("CLEAN COMMENTS:\n" + processedOriginalText);
+		
+		HtmlCleanPreProcessing hcpp = new HtmlCleanPreProcessing();
+		
+		try {
+			
+			hcpp.yyreset(new StringReader(processedOriginalText));
+			
+			hcpp.yylex();
+			
+		} catch (IOException e) {
+
+			e.printStackTrace();
+			
+			return;
+		}
+		
+		processedOriginalText = hcpp.getOutput();
+		
+		//System.out.println("CLEAN HEAD:\n" + processedOriginalText);
+		
 		HtmlPreProcessing hpp = new HtmlPreProcessing();
 		
 		try {
 			
-			hpp.yyreset(new StringReader(originalText));
+			hpp.yyreset(new StringReader(processedOriginalText));
 			
 			hpp.yylex();
 			
@@ -182,6 +265,8 @@ public class LinkolnDocument {
 		htmlCuts = hpp.getCuts();
 		
 		originalContents = hpp.getContents();
+		
+		//System.out.println("PLAIN TEXT:\n" + plainText);
 	}	
 
 	/*
@@ -232,13 +317,16 @@ public class LinkolnDocument {
 	
 	/*
 	 * TODO Spostare tutta la parte delle annotazioni e degli oggetti in memoria corrispondenti nel Service Bus
-	 * 
+	 */ 
 	public Collection<AnnotationEntity> getAnnotationEntities() {
 		
 		return Collections.unmodifiableCollection(entities);
 	}
-	*/
 	
+	public void resetEntities() {
+		
+		entities = new ArrayList<AnnotationEntity>();
+	}
 	
 	LinkolnDocument() {
 		

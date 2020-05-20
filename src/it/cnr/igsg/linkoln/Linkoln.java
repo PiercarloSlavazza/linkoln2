@@ -16,6 +16,7 @@ package it.cnr.igsg.linkoln;
 
 import java.io.IOException;
 
+import it.cnr.igsg.linkoln.reference.HudocRepo;
 import it.cnr.igsg.linkoln.service.LinkolnAnnotationService;
 import it.cnr.igsg.linkoln.service.LinkolnRenderingService;
 import it.cnr.igsg.linkoln.service.LinkolnService;
@@ -26,19 +27,30 @@ import it.cnr.igsg.linkoln.service.impl.Util;
 public class Linkoln {
 
 	
-	public final static String VERSION = "2.1.5";
+	public final static String VERSION = "2.2.0";
 	
 	public static boolean DEBUG = false;
+	public static boolean DEBUG_ALL_ANNOTATIONS = false;
 
 	public static boolean HTML_TARGET_BLANK = true;
 	public static boolean HTML_ADD_HEADER = true;
 	public static boolean HTML_USE_PRE = true;
-	public static boolean HTML_DEBUG = false;
 	
 	public static boolean LOAD_MUNICIPALITIES = true;
 
 	public static boolean FORCE_EXIT_AFTER_SERVICE_FAILURE = true;
 	
+	public static boolean FAR_AUTH = true;
+	public static boolean CLUSTERING = true;
+	
+	//Filtra via tutti i riferimenti che non hanno nè identificatore nè lkn-auth-name
+	public final static boolean STRICT = true;
+
+	//Fai assunzioni basate su pattern incompleti
+	public static boolean EXTENDED_PATTERNS = true;
+	
+	public static boolean CASS_SUPREME = true; //Considera 'Corte suprema' come la Corte di Cassazione italiana	
+
 	
 	public static LinkolnDocument run(String text) {
 		
@@ -65,7 +77,9 @@ public class Linkoln {
 			try {
 			
 				Util.initMunicipalities();
-				
+
+				HudocRepo.init();
+
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -73,8 +87,11 @@ public class Linkoln {
 			if(DEBUG && (Util.token2code != null)) System.out.println("Done. (" + Util.token2code.size() + ")");
 		}
 		
+		ServiceManager sm = new ServiceManager();
+		
 		//Run every service implementation for the specified language/jurisdiction
-		for(LinkolnService service : ServiceManager.getInstance().getServices(linkolnDocument.getLanguage())) {
+		//for(LinkolnService service : ServiceManager.getInstance().getServices(linkolnDocument.getLanguage())) {
+		for(LinkolnService service : sm.getServices(linkolnDocument.getLanguage())) {
 			
 			service.initService(linkolnDocument);
 			
@@ -89,7 +106,13 @@ public class Linkoln {
 				
 				//Manage failures
 				//((LinkolnDocument) linkolnDocument).addError("Service failed. (" + service.getDescription() + ")");
-				System.err.println("Service failed. (" + service.getDescription() + ")");
+				
+				String annError = "";
+				if(service instanceof LinkolnAnnotationService) {
+					annError = "\n[annotation error after \"" + ((LinkolnAnnotationService) service).getError() + "\"]";
+				}
+				System.err.println("Service failed. (" + service.getDescription() + ")" + annError);
+				
 				linkolnDocument.setFailed(true);
 				break; //A generic failure of a service does stop the pipeline
 				
@@ -105,14 +128,13 @@ public class Linkoln {
 					
 					((LinkolnDocument) linkolnDocument).addRenderingService((LinkolnRenderingService) service);
 				}
-
 			}
 		}
 		
-		if(DEBUG) {
+		if(DEBUG_ALL_ANNOTATIONS) {
 			
 			//Print the annotation history
-			System.out.println("\n\nANNOTATIONS: \n");
+			System.out.println("\n\nALL ANNOTATIONS: \n");
 			
 			int count = 1;
 			for(LinkolnAnnotationService service : ((LinkolnDocument) linkolnDocument).getAnnotationServices() ) {

@@ -16,6 +16,7 @@ package it.cnr.igsg.linkoln.reference;
 
 import it.cnr.igsg.linkoln.LinkolnDocument;
 import it.cnr.igsg.linkoln.entity.AnnotationEntity;
+import it.cnr.igsg.linkoln.entity.EuropeanCaseLawReference;
 import it.cnr.igsg.linkoln.entity.EuropeanLegislationReference;
 import it.cnr.igsg.linkoln.entity.Reference;
 import it.cnr.igsg.linkoln.service.impl.Util;
@@ -25,9 +26,11 @@ public class CelexIdentifierGeneration implements IdentifierGeneration {
 	@Override
 	public LinkolnIdentifier getLinkolnIdentifier(LinkolnDocument linkolnDocument, Reference annotationEntity) {
 
-		if( !(annotationEntity instanceof EuropeanLegislationReference)) return null;
+		if( annotationEntity instanceof EuropeanLegislationReference) return process((EuropeanLegislationReference) annotationEntity); 
 		
-		return process((EuropeanLegislationReference) annotationEntity);
+		if( annotationEntity instanceof EuropeanCaseLawReference) return process((EuropeanCaseLawReference) annotationEntity);
+		
+		return null;
 	}
 
 	private LinkolnIdentifier process(EuropeanLegislationReference entity) {
@@ -35,7 +38,7 @@ public class CelexIdentifierGeneration implements IdentifierGeneration {
 		LinkolnIdentifier linkolnIdentifier = new LinkolnIdentifier();
 		linkolnIdentifier.setType(Identifiers.CELEX);
 		
-		String lang = "it"; //TODO multi lang and jurisdiction
+		String lang = "it";
 		
         String prefix = "http://eur-lex.europa.eu/legal-content/" + lang + "/TXT/?uri=CELEX:";
 		
@@ -55,31 +58,20 @@ public class CelexIdentifierGeneration implements IdentifierGeneration {
 		String sector = "";
 		String celexNumber = "";
 		String celexYear = "";
-				
-        
-        AnnotationEntity docType = entity.getRelatedEntity("EU_LEG_DOCTYPE");
-        
-        if(docType == null) {
-        	
-        		docType = entity.getRelatedEntity("LEG_DOCTYPE");
-        }
-        
-        if(docType == null) {
-        	
-    			docType = entity.getRelatedEntity("DOCTYPE");
-        }
-    
+		
+		AnnotationEntity docType = entity.getDocumentType();
+     
         if(docType == null) {
         	
         		return null;
         }
-		
+        
         if(docType.getValue().equals("DIRECTIVE")) { sector="3"; type = "L"; }
         if(docType.getValue().equals("REGULATION")) { sector="3"; type = "R"; }
         if(docType.getValue().equals("RECOMMENDATION")) { sector="3"; type = "H"; }
         if(docType.getValue().equals("DECISION")) { sector="3"; type = "D"; }
         
-        AnnotationEntity number = entity.getRelatedEntity("NUMBER");
+        AnnotationEntity number = entity.getNumber();
         
         if(number != null) {
         	
@@ -94,7 +86,7 @@ public class CelexIdentifierGeneration implements IdentifierGeneration {
         
         if(celexYear.equals("")) {
         	
-        		AnnotationEntity date = entity.getRelatedEntity("DOC_DATE");
+        		AnnotationEntity date = entity.getDate();
         		
         		if(date != null && date.getRelatedEntity("YEAR") != null) {
         			
@@ -108,7 +100,7 @@ public class CelexIdentifierGeneration implements IdentifierGeneration {
 
 		//TODO Year deve essere letto in altro modo!
 
-		celex = prefix + sector + celexYear + type + celexNumber;
+		celex = sector + celexYear + type + celexNumber;
 		
 		//Non produrre un identificatore Celex se manca l'anno o il numero
 		if(celexYear.equals("") || celexNumber.equals("")) {
@@ -139,14 +131,7 @@ public class CelexIdentifierGeneration implements IdentifierGeneration {
 				artValue += partitionEntity.getRelatedEntity("ARTICLE").getValue();
 			}
 		}
-        
-		/*
-        if(alias.getRelatedEntity("LEG_PARTITION") != null && alias.getRelatedEntity("LEG_PARTITION").getRelatedEntity("ARTICLE") != null) {
-        	
-        		artValue = alias.getRelatedEntity("LEG_PARTITION").getRelatedEntity("ARTICLE").getValue();
-        }
-        */
-	
+
         if(artValue.length()>0) {
 			
 			if(artValue.length()==1) artValue = "00" + artValue;
@@ -158,11 +143,67 @@ public class CelexIdentifierGeneration implements IdentifierGeneration {
 			celexSuffix = "/TXT";
 		}
 
-        if(alias.getValue().equals("EU_TUE")) celex = "11992M";
+        //if(alias.getValue().equals("EU_TUE")) celex = "11992M";  //Questo non funziona TODO
+        if(alias.getValue().equals("EU_TUE")) celex = "11992E";
+        
+        if(alias.getValue().equals("EU_TCEE")) celex = "11957E/TXT";
         
         if(alias.getValue().equals("EU_TFUE")) celex = "12008E";
 		
 		
 		return celex + celexSuffix;
+	}
+	
+	private LinkolnIdentifier process(EuropeanCaseLawReference entity) {
+		
+		LinkolnIdentifier linkolnIdentifier = new LinkolnIdentifier();
+		linkolnIdentifier.setType(Identifiers.CELEX);
+		
+		AnnotationEntity auth = entity.getAuthority();
+		
+		if(auth == null || ( !auth.getValue().equals("EU_CJEU") && !auth.getValue().equals("EU_CJEC")) ) return null;
+		
+		AnnotationEntity caseNumber = entity.getCaseNumber();
+		
+		if(caseNumber == null || caseNumber.getValue() == null || caseNumber.getValue().length() < 4) return null;
+		
+		String lang = "it";
+		
+        String prefix = "http://eur-lex.europa.eu/legal-content/" + lang + "/TXT/?uri=CELEX:";
+		
+		String celex = "";
+		
+		String type = "CJ";
+		String sector = "6";
+		String celexNumber = Util.readFirstNumber(caseNumber.getValue());
+		String celexYear = Util.normalizeYear(Util.readSecondNumber(caseNumber.getValue()));
+		
+		/*
+		 * TODO
+		 * Nel caso di cause riunite si devono prendere i valori anno e numero più vecchi.
+		 */
+		
+		
+		AnnotationEntity docType = entity.getDocumentType();
+		
+        if(docType != null && docType.getValue().equals("JUDGMENT")) { type = "CJ"; }
+        if(docType != null && docType.getValue().equals("ORDER")) { type = "CO"; }
+        
+		if(celexNumber.length() == 1) { celexNumber = "000" + celexNumber; }
+		if(celexNumber.length() == 2) { celexNumber = "00" + celexNumber; }
+		if(celexNumber.length() == 3) { celexNumber = "0" + celexNumber; }
+
+		celex = sector + celexYear + type + celexNumber;
+		
+		//Non produrre un identificatore Celex se manca l'anno o il numero
+		if(celexYear.equals("") || celexNumber.equals("")) {
+			
+			return null;
+		}
+		
+		linkolnIdentifier.setCode(celex);
+		linkolnIdentifier.setUrl(prefix + celex);
+		
+		return linkolnIdentifier;
 	}
 }

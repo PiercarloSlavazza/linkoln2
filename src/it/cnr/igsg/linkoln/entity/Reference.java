@@ -17,6 +17,8 @@ package it.cnr.igsg.linkoln.entity;
 import java.util.HashMap;
 import java.util.Map;
 
+import it.cnr.igsg.linkoln.Linkoln;
+import it.cnr.igsg.linkoln.reference.Cluster;
 import it.cnr.igsg.linkoln.reference.LinkolnReference;
 import it.cnr.igsg.linkoln.service.impl.Util;
 
@@ -24,7 +26,18 @@ public class Reference extends AnnotationEntity {
 
 	private LinkolnReference linkolnReference = null;
 	
+	private Cluster cluster = null;
+	
+	public Cluster getCluster() {
+		return cluster;
+	}
+
+	public void setCluster(Cluster cluster) {
+		this.cluster = cluster;
+	}
+	
 	public LinkolnReference getLinkolnReference() {
+		
 		return linkolnReference;
 	}
 
@@ -73,6 +86,32 @@ public class Reference extends AnnotationEntity {
 			hasAuthority = true;
 		}
 		
+		if( !hasAuthority) {
+			
+			//Le sezioni della Cassazione sono da considerarsi come authority?  <-- In alternativa occorre un servizio con pattern specifici per la Cassazione
+			if(getRelatedEntity("CL_AUTH_SECTION") != null) {
+				
+				String value = getRelatedEntity("CL_AUTH_SECTION").getValue().toUpperCase();
+				
+				if(value.equals("1")||value.equals("2")||value.equals("3")||value.equals("4")||value.equals("5")||value.equals("6")||value.equals("7")||
+						value.equals("6-1")||value.equals("6-2")||value.equals("6-3")||value.equals("6-4")||
+						value.equals("U")||value.equals("L")||value.equals("T")||value.equals("F")) {
+					
+					hasAuthority = true;
+				}
+			} else if(name2sharedEntity.get("DOCTYPE") != null) {
+				
+				String value = name2sharedEntity.get("DOCTYPE").getValue().toUpperCase();
+				
+				if(value.equals("1")||value.equals("2")||value.equals("3")||value.equals("4")||value.equals("5")||value.equals("6")||value.equals("7")||
+						value.equals("6-1")||value.equals("6-2")||value.equals("6-3")||value.equals("6-4")||
+						value.equals("U")||value.equals("L")||value.equals("T")||value.equals("F")) {
+					
+					hasAuthority = true;
+				}
+			}
+		}
+		
 		if(getRelatedEntity("DOCTYPE") != null || getRelatedEntity("CL_DOCTYPE") != null || getRelatedEntity("LEG_DOCTYPE") != null || getRelatedEntity("EU_LEG_DOCTYPE") != null) {
 			
 			hasDocType = true;
@@ -88,7 +127,7 @@ public class Reference extends AnnotationEntity {
 			hasNumber = true;
 		}
 		
-		if(getRelatedEntity("DATE") != null) {
+		if(getRelatedEntity("DOC_DATE") != null) {
 			
 			hasDate = true;
 		}
@@ -102,6 +141,16 @@ public class Reference extends AnnotationEntity {
 	}
 	
 	public Authority getAuthority() {
+		
+		return getAuthority(false);
+	}
+	
+	public Authority getAuthority(boolean strict) {
+		
+		if( !strict && Linkoln.CLUSTERING && getCluster() != null) {
+			
+			return (Authority) getCluster().getAuth();
+		}
 
 		AnnotationEntity entity = this.getRelatedEntity("CL_AUTH");
 		if(entity != null) return (CaseLawAuthority) entity;
@@ -120,46 +169,83 @@ public class Reference extends AnnotationEntity {
 	
 	public String getAuthorityValue() {
 		
-		Authority entity = getAuthority();
+		return getAuthorityValue(false);
+	}
+	
+	public String getAuthorityValue(boolean strict) {
 		
-		if(entity == null) return null;
+		Authority entity = getAuthority(strict);
+		
+		if(entity == null) {
+			
+			//Se nella citazione è specificata soltanto una delle sezioni di cassazione, guess Cassazione as authority VALUE
+			if(Linkoln.EXTENDED_PATTERNS && getRelatedEntity("CL_AUTH_SECTION") != null) {
+				
+				String value = getRelatedEntity("CL_AUTH_SECTION").getValue().toUpperCase();
+				
+				if(value.equals("1")||value.equals("2")||value.equals("3")||value.equals("4")||value.equals("5")||value.equals("6")||value.equals("7")||
+						value.equals("6-1")||value.equals("6-2")||value.equals("6-3")||value.equals("6-4")||
+						value.equals("U")||value.equals("L")||value.equals("T")||value.equals("F")) {
+					
+					return "IT_CASS";
+				}
+			}
+			
+			return null;
+		}
 		
 		return entity.getValue();
 	}
 	
 	public DocumentType getDocumentType() {
 		
-		AnnotationEntity entity = this.getRelatedEntity("CL_DOCTYPE");
+		return getDocumentType(false);
+	}
+	
+	public DocumentType getDocumentType(boolean strict) {
+		
+		if( !strict && Linkoln.CLUSTERING && getCluster() != null) {
+			
+			return (DocumentType) getCluster().getDocType();
+		}
+
+		//Il document type può essere attaccato all'alias o direttamente alla reference
+		AnnotationEntity parent = getAlias();
+		
+		if(parent == null) parent = this;
+		
+		AnnotationEntity entity = parent.getRelatedEntity("CL_DOCTYPE");
 		if(entity != null) return (CaseLawDocumentType) entity;
 
-		entity = this.getRelatedEntity("LEG_DOCTYPE");
+		entity = parent.getRelatedEntity("LEG_DOCTYPE");
 		if(entity != null) return (LegislationDocumentType) entity;
 		
-		entity = this.getRelatedEntity("EU_LEG_DOCTYPE");
+		entity = parent.getRelatedEntity("EU_LEG_DOCTYPE");
 		if(entity != null) return (EuropeanLegislationDocumentType) entity;
 		
-		entity = this.getRelatedEntity("DOCTYPE");
+		entity = parent.getRelatedEntity("DOCTYPE");
 		if(entity != null) return (DocumentType) entity;
 		
 		return null;
 	}
-	
-	public String getDocumentTypeValue() {
-		
-		DocumentType entity = getDocumentType();
-		
-		if(entity == null) return null;
-		
-		return entity.getValue();
-	}
 
-	public String getCity() {
+	public AnnotationEntity getCity() {
+	
+		return getCity(false);
+	}
+	
+	public AnnotationEntity getCity(boolean strict) {
 		
+		if( !strict && Linkoln.CLUSTERING && getCluster() != null) {
+			
+			return getCluster().getCity();
+		}
+
 		AnnotationEntity entity = this.getRelatedEntity("CITY");
 		
 		if(entity != null) {
 
-			return entity.getValue();
+			return entity;
 		}
 		
 		//Look first in detached section then in authority
@@ -168,7 +254,19 @@ public class Reference extends AnnotationEntity {
 		
 		if(auth == null) {
 			
+			//get the main authority
 			auth = getAuthority();
+			
+			if(auth == null) return null;
+			
+			//Look for a detatched auth within the main auth
+			auth = auth.getRelatedEntity("CL_DETACHED_SECTION");
+			
+			if(auth == null) {
+				
+				//get back to the main auth
+				auth = getAuthority();
+			}			
 		}
 		
 		if(auth != null) {
@@ -177,27 +275,108 @@ public class Reference extends AnnotationEntity {
 			
 			if(entity != null) {
 
-				return entity.getValue();
+				return entity;
 			}
 			
 			entity = auth.getRelatedEntity("MUNICIPALITY");
 			
 			if(entity != null) {
 
-				return entity.getValue();
+				return entity;
+			}
+		}
+		
+		return null;
+	}
+
+	public AnnotationEntity getAuthCity() {
+		
+		//Look only in authority
+		
+		AnnotationEntity auth = getAuthority();
+		
+		if(auth != null) {
+			
+			AnnotationEntity entity = auth.getRelatedEntity("CITY");
+			
+			if(entity != null) {
+
+				return entity;
+			}
+			
+			entity = auth.getRelatedEntity("MUNICIPALITY");
+			
+			if(entity != null) {
+
+				return entity;
 			}
 		}
 		
 		return null;
 	}
 	
-	public String getRegion() {
+	public AnnotationEntity getDetAuth() {
 		
+		//Look only in detatched authority
+		AnnotationEntity auth = this.getRelatedEntity("CL_DETACHED_SECTION");
+		
+		if(auth == null) {
+			
+			//look for a det auth within the main auth
+			auth = getAuthority();
+			if(auth != null) {
+				
+				auth = auth.getRelatedEntity("CL_DETACHED_SECTION");
+				
+			} else {
+				return null;
+			}
+		}
+
+		return auth;
+	}
+	
+	public AnnotationEntity getDetAuthCity() {
+		
+		AnnotationEntity auth = getDetAuth();
+		
+		if(auth != null) {
+			
+			AnnotationEntity entity = auth.getRelatedEntity("CITY");
+			
+			if(entity != null) {
+
+				return entity;
+			}
+			
+			entity = auth.getRelatedEntity("MUNICIPALITY");
+			
+			if(entity != null) {
+
+				return entity;
+			}
+		}
+		
+		return null;
+	}
+	
+	public AnnotationEntity getRegion() {
+		
+		return getRegion(false);
+	}
+	
+	public AnnotationEntity getRegion(boolean strict) {
+		
+		if( !strict && Linkoln.CLUSTERING && getCluster() != null) {
+			
+			return getCluster().getRegion();
+		}
+
 		AnnotationEntity entity = this.getRelatedEntity("REGION");
 		
 		if(entity != null) {
 
-			return entity.getValue();
+			return entity;
 		}
 		
 		Authority auth = getAuthority();
@@ -208,16 +387,58 @@ public class Reference extends AnnotationEntity {
 			
 			if(entity != null) {
 
-				return entity.getValue();
+				return entity;
+			}
+			
+			AnnotationEntity authDist = auth.getRelatedEntity("CL_DETACHED_SECTION");
+			
+			if(authDist != null) {
+				
+				entity = authDist.getRelatedEntity("REGION");
+				
+				if(entity != null) {
+
+					return entity;
+				}
 			}
 		}
 		
 		return null;
 	}
 	
-	public String getNumber() {
+	public AnnotationEntity getCountry() {
 		
-		AnnotationEntity entity = this.getRelatedEntity("NUMBER");
+		AnnotationEntity entity = this.getRelatedEntity("COUNTRY");
+		
+		if(entity != null) {
+
+			return entity;
+		}
+		
+		Defendant def = getDefendant(true);
+		
+		if(def != null) {
+			
+			entity = def.getRelatedEntity("COUNTRY");
+			
+			if(entity != null) {
+
+				return entity;
+			}
+		}
+		
+		return null;
+	}
+	
+	public String getNumberValue() {
+		
+		return getNumberValue(false);
+	}
+	
+	public String getNumberValue(boolean strict) {
+		
+		AnnotationEntity entity = getNumber(strict);
+		
 		if(entity != null) {
 			
 			return Util.readFirstNumber(entity.getValue()); //TODO non è detto sia sempre il primo numero (es.: 2019/123)
@@ -226,28 +447,144 @@ public class Reference extends AnnotationEntity {
 		return null;
 	}
 	
-	public String getYear() {
+	public AnnotationEntity getNumber() {
 		
+		return getNumber(false);
+	}
+	
+	public AnnotationEntity getNumber(boolean strict) {
+		
+		if( !strict && Linkoln.CLUSTERING && getCluster() != null) {
+			
+			return getCluster().getNumber();
+		}
+
+		AnnotationEntity entity = this.getRelatedEntity("NUMBER");
+		if(entity != null) {
+			
+			return entity;
+		}
+
+		return null;
+	}
+	
+	public Year getYear() {
+		
+		return getYear(false);
+	}
+	
+	public Year getYear(boolean strict) {
+		
+		if( !strict && Linkoln.CLUSTERING && getCluster() != null) {
+			
+			return (Year) getCluster().getYear();
+		}
+
 		//Look into NUMBER first, then DATE
 		
 		AnnotationEntity entity = this.getRelatedEntity("NUMBER");
 		if(entity != null) {
 			
 			AnnotationEntity year = entity.getRelatedEntity("YEAR");
-			if(year != null) return year.getValue();
+			if(year != null) return (Year) year;
 		}
 		
 		entity = this.getRelatedEntity("DOC_DATE");
 		if(entity != null) {
 			
 			AnnotationEntity year = entity.getRelatedEntity("YEAR");
-			if(year != null) return year.getValue();
+			if(year != null) return (Year) year;
 		}
 
 		return null;
 	}
 	
-	public String getApplicant() {
+	public Year getYearFromNumber() {
+		
+		AnnotationEntity entity = this.getRelatedEntity("NUMBER");
+		if(entity != null) {
+			
+			AnnotationEntity year = entity.getRelatedEntity("YEAR");
+			if(year != null) return (Year) year;
+		}
+		
+		return null;
+	}
+
+	public Date getDate() {
+		
+		return getDate(false);
+	}
+	
+	public Date getDate(boolean strict) {
+		
+		if( !strict && Linkoln.CLUSTERING && getCluster() != null) {
+			
+			return (Date) getCluster().getDate();
+		}
+
+		AnnotationEntity entity = this.getRelatedEntity("DOC_DATE");
+		
+		if(entity != null) {
+			
+			return (Date) entity;
+		}
+
+		return null;
+	}
+	
+	public AnnotationEntity getCaseNumber() {
+		
+		return getCaseNumber(false);
+	}
+	
+	public AnnotationEntity getCaseNumber(boolean strict) {
+		
+		if( !strict && Linkoln.CLUSTERING && getCluster() != null) {
+			
+			return getCluster().getCaseNumber();
+		}
+
+		AnnotationEntity entity = this.getRelatedEntity("CASENUMBER");
+		
+		if(entity != null) {
+			
+			return entity;
+		}
+
+		return null;
+	}
+	
+	public String getApplicantValue() {
+		
+		return getApplicantValue(false);
+	}
+	
+	public String getApplicantValue(boolean strict) {
+
+		Applicant applicant = getApplicant(strict);
+		
+		if(applicant != null) {
+			
+			if(applicant.getValue() != null && applicant.getValue().length() > 0) return applicant.getValue();
+			
+			return applicant.getText();
+		}
+		
+		return null;
+	}
+	
+	public Applicant getApplicant() {
+		
+		return getApplicant(false);
+	}
+	
+	public Applicant getApplicant(boolean strict) {
+		
+		if( !strict && Linkoln.CLUSTERING && getCluster() != null) {
+			
+			return (Applicant) getCluster().getApplicant();
+		}
 
 		AnnotationEntity party = this.getRelatedEntity("PARTY");
 		
@@ -257,14 +594,43 @@ public class Reference extends AnnotationEntity {
 			
 			if(applicant != null) {
 				
-				return applicant.getText();
+				return (Applicant) applicant;
 			}
 		}
 		
 		return null;
 	}
 	
-	public String getDefendant() {
+	public String getDefendantValue() {
+		
+		return getDefendantValue(false);
+	}
+	
+	public String getDefendantValue(boolean strict) {
+
+		Defendant defendant = getDefendant(strict);
+		
+		if(defendant != null) {
+			
+			if(defendant.getValue() != null && defendant.getValue().length() > 0) return defendant.getValue();
+			
+			return defendant.getText();
+		}
+		
+		return null;
+	}
+	
+	public Defendant getDefendant() {
+		
+		return getDefendant(false);
+	}
+	
+	public Defendant getDefendant(boolean strict) {
+
+		if( !strict && Linkoln.CLUSTERING && getCluster() != null) {
+			
+			return (Defendant) getCluster().getDefendant();
+		}
 
 		AnnotationEntity party = this.getRelatedEntity("PARTY");
 		
@@ -274,20 +640,30 @@ public class Reference extends AnnotationEntity {
 			
 			if(defendant != null) {
 				
-				return defendant.getText();
+				return (Defendant) defendant;
 			}
 		}
 		
 		return null;
 	}
 
-	public String getSubject() {
+	public Subject getSubject() {
+	
+		return getSubject(false);
+	}
+	
+	public Subject getSubject(boolean strict) {
 		
+		if( !strict && Linkoln.CLUSTERING && getCluster() != null) {
+			
+			return (Subject) getCluster().getSubject();
+		}
+
 		AnnotationEntity entity = this.getRelatedEntity("SUBJECT");
 		
 		if(entity != null) {
 			
-			return entity.getValue();
+			return (Subject) entity;
 		}
 		
 		AnnotationEntity caseNum = this.getRelatedEntity("CASENUMBER");
@@ -298,10 +674,49 @@ public class Reference extends AnnotationEntity {
 			
 			if(entity != null) {
 				
-				return entity.getValue();
+				return (Subject) entity;
 			}
 		}
 		
 		return null;
 	}
+	
+	public Alias getAlias() {
+		
+		AnnotationEntity entity = this.getRelatedEntity("LEG_ALIAS");
+		
+		if(entity != null) {
+			
+			return (LegislationAlias) entity;
+		}
+		
+		entity = this.getRelatedEntity("EU_LEG_ALIAS");
+		
+		if(entity != null) {
+			
+			return (EuropeanLegislationAlias) entity;
+		}
+		
+		return null;
+	}
+	
+	public String getPartition(String partitionType) {
+	
+		if(partitionType == null || partitionType.trim().length() < 1) return null;
+		
+		AnnotationEntity partition = this.getRelatedEntity("LEG_PARTITION");
+		
+		if(partition != null) {
+			
+			AnnotationEntity part = partition.getRelatedEntity(partitionType.trim().toUpperCase());
+			
+			if(part != null) {
+				
+				return part.getValue();
+			}
+		}
+		
+		return null;
+	}
+	
 }

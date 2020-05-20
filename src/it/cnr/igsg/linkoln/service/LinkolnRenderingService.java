@@ -61,9 +61,13 @@ public abstract class LinkolnRenderingService extends LinkolnAnnotationService {
 			
 			String preOpen = "";
 			String preClose = "";
+			
 			if(Linkoln.HTML_USE_PRE) {
+				
 				preOpen = "<pre>";
 				preClose = "</pre>";
+				
+				output = output.replaceAll("\r\n", "<br/>").replaceAll("\n", "<br/>");
 			}
 			//Add an HTML header and footer for plain texts
 			String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML//EN\" \"xhtml-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<body>" + preOpen + "\n";

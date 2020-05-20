@@ -14,6 +14,7 @@
  ******************************************************************************/
 package it.cnr.igsg.linkoln.reference;
 
+import it.cnr.igsg.linkoln.Linkoln;
 import it.cnr.igsg.linkoln.LinkolnDocument;
 import it.cnr.igsg.linkoln.entity.AnnotationEntity;
 import it.cnr.igsg.linkoln.entity.EuropeanLegislationReference;
@@ -46,46 +47,82 @@ public class UrnIdentifierGeneration implements IdentifierGeneration {
 		String urnType = "";
 		String urnDate = "";
 		String urnNumber = "";
-		String urnPartition = "";
 		//String urnVersion = "";
 		
-		String docUrn = "";
 		
+		
+		//EVENTUALE PARTIZIONE
+		AnnotationEntity partition = entity.getRelatedEntity("LEG_PARTITION");
+		String urnPartition = "";
+		if(partition != null) {
+			
+			urnPartition = partition.getValue().toLowerCase();
+			
+			urnPartition = urnPartition.replaceAll("-", "");
+			urnPartition = urnPartition.replaceAll("_", "-");
+			urnPartition = urnPartition.replaceAll("item", "num");
+			
+			if( !urnPartition.equals("")) {
+				
+				urnPartition = "~" + urnPartition;
+			}
+		}
+		
+
+		//ALIAS LEGISLATIVI
 		AnnotationEntity alias = entity.getRelatedEntity("LEG_ALIAS");
 		
 		if(alias != null) {
 			
-			docUrn = getAliasUrn(alias);
+			String docUrn = getAliasUrn(alias);
+			
+			if(docUrn.equals("")) {
+				
+				//Alias legislativo non presente su normattiva
+				if(alias.getValue().equals("CONV_EU_DIR_UOMO")) {
+					
+					linkolnIdentifier.setCode("");
+					linkolnIdentifier.setUrl("https://www.echr.coe.int/Documents/Convention_ITA.pdf");
+					
+					return linkolnIdentifier;
+				}
+			}
+			
+			urnNir += docUrn + urnPartition;
+			
+			linkolnIdentifier.setCode(urnNir);
+			linkolnIdentifier.setUrl(urlPrefix + urnNir);
+			
+			return linkolnIdentifier;
 		}
 		
+		
+		//RIFERIMENTI LEGISLATIVI STANDARD
+		/*
 		AnnotationEntity docType = entity.getRelatedEntity("LEG_DOCTYPE");
 		
 		if(docType == null) {
 			
 			docType = entity.getRelatedEntity("DOCTYPE");
 		}
+		*/
+		AnnotationEntity docType = entity.getDocumentType();
 		
-		AnnotationEntity legAuth = entity.getRelatedEntity("LEG_AUTH");
-
-		AnnotationEntity number = entity.getRelatedEntity("NUMBER");
+		//AnnotationEntity legAuth = entity.getRelatedEntity("LEG_AUTH");
+		AnnotationEntity legAuth = entity.getAuthority();
 		
-		AnnotationEntity year = null;
+		//AnnotationEntity number = entity.getRelatedEntity("NUMBER");
+		AnnotationEntity number = entity.getNumber();
 		
-		AnnotationEntity date = entity.getRelatedEntity("DOC_DATE");
+		//AnnotationEntity year = null;
+		AnnotationEntity year = entity.getYear();
 		
-		AnnotationEntity partition = entity.getRelatedEntity("LEG_PARTITION");
+		//AnnotationEntity date = entity.getRelatedEntity("DOC_DATE");
+		AnnotationEntity date = entity.getDate();
 		
 		
 		if(docType != null) {
 
-			/*
-			if(docType.getValue().equals("LAW") || docType.getValue().equals("DECREE") || docType.getValue().equals("DECREE_LAW") || docType.getValue().equals("LGS_DECREE") ||
-					docType.getValue().equals("CONST_LAW") || docType.getValue().equals("ROYAL_DECREE") || docType.getValue().equals("ROYAL_DECREE_LAW") || docType.getValue().equals("ROYAL_LGS_DECREE")) {
-				
-				urnAuth = "stato";
-			}
-			*/
-			
 			if(docType.getValue().equals("LAW")) { urnType = "legge"; urnAuth = "stato"; }
 			if(docType.getValue().equals("DECREE_LAW")) { urnType = "decreto.legge"; urnAuth = "stato"; }
 			if(docType.getValue().equals("LGS_DECREE")) { urnType = "decreto.legislativo"; urnAuth = "stato"; }
@@ -95,56 +132,50 @@ public class UrnIdentifierGeneration implements IdentifierGeneration {
 			if(docType.getValue().equals("ROYAL_LGS_DECREE")) { urnType = "regio.decreto.legislativo"; urnAuth = "stato"; }
 			if(docType.getValue().equals("LGS_DECREE_LGT")) { urnType = "decreto.legislativo.luogotenenziale"; urnAuth = "stato"; }
 			if(docType.getValue().equals("DECREE_LAW_LGT")) { urnType = "decreto.legge.luogotenenziale"; urnAuth = "stato"; }
-
 			if(docType.getValue().equals("DECREE")) { urnType = "decreto"; }
+			if(docType.getValue().equals("MIN_DECREE") || docType.getValue().equals("INTERMIN_DECREE")) { urnType = "decreto"; urnAuth = "ministero."; }
 
-			if(docType.getValue().equals("DISEGNO_LEGGE")) urnType = "disegno.legge";
-			if(docType.getValue().equals("PROGETTO_LEGGE")) urnType = "progetto.legge";
-			
-			if(docType.getValue().equals("ORDER")) urnType = "ordinanza";
-			if(docType.getValue().equals("CIRCULAR")) urnType = "circolare";
-			if(docType.getValue().equals("REGULATION")) urnType = "regolamento";
-			if(docType.getValue().equals("OPINION")) urnType = "parere";
-			if(docType.getValue().equals("RESOLUTION")) urnType = "risoluzione";
-			if(docType.getValue().equals("PROVISION")) urnType = "provvedimento";
+			//OPCM
+			if(docType.getValue().equals("ORDER") && legAuth != null && legAuth.getValue().equals("IT_PRESIDENT_COUNCIL")) urnType = "ordinanza";
 			
 			/*
-			if(docType.getValue().equals("REGIONAL_LAW")) urnType = "legge.regionale";
-			if(docType.getValue().equals("PROVINCIAL_LAW")) urnType = "legge.provinciale";
-			if(docType.getValue().equals("REGIONAL_REGULATION")) urnType = "regolamento.regionale";
-			if(docType.getValue().equals("PROV_REGULATION")) urnType = "regolamento.provinciale";
-			if(docType.getValue().equals("MUNICIP_REGULATION")) urnType = "regolamento.comunale";
+			if(docType.getValue().equals("DISEGNO_LEGGE")) urnType = "disegno.legge";
+			if(docType.getValue().equals("PROGETTO_LEGGE")) urnType = "progetto.legge";
 			*/
 			
+			if(legAuth != null && legAuth.getValue().startsWith("IT_MIN")) {
+			
+				if(docType.getValue().equals("ORDER")) urnType = "ordinanza";
+				if(docType.getValue().equals("CIRC")) urnType = "circolare";
+				if(docType.getValue().equals("REGULATION")) urnType = "regolamento";
+				if(docType.getValue().equals("OPINION")) urnType = "parere";
+				if(docType.getValue().equals("RESOLUTION")) urnType = "risoluzione";
+				if(docType.getValue().equals("PROVISION")) urnType = "provvedimento";
+			}
+						
 			if(docType.getValue().equals("REGIONAL_LAW")) { urnType = "legge"; urnAuth = "regione."; }
 			if(docType.getValue().equals("PROVINCIAL_LAW")) { urnType = "legge"; urnAuth = "provincia."; }
 			if(docType.getValue().equals("REGIONAL_REGULATION")) { urnType = "regolamento"; urnAuth = "regione."; }
 			if(docType.getValue().equals("PROV_REGULATION")) { urnType = "regolamento"; urnAuth = "provincia."; }
 			if(docType.getValue().equals("MUNICIP_REGULATION")) { urnType = "regolamento"; urnAuth = "comune."; }
 			
-			/*
-			if(docType.getValue().equals("MIN_DECREE")) urnType = "decreto.ministeriale";
-			if(docType.getValue().equals("INTERMIN_DECREE")) urnType = "decreto.interministeriale";
-			if(docType.getValue().equals("MIN_ORDER")) urnType = "ordinanza.ministeriale";
-			if(docType.getValue().equals("INTERMIN_ORDER")) urnType = "ordinanza.interministeriale";
-			if(docType.getValue().equals("MIN_REGULATION")) urnType = "regolamento.ministeriale";
-			if(docType.getValue().equals("INTERMIN_REGULATION")) urnType = "regolamento.interministeriale";
-			if(docType.getValue().equals("MIN_CIRCULAR")) urnType = "circolare.ministeriale";
-			if(docType.getValue().equals("INTERMIN_CIRCULAR")) urnType = "circolare.interministeriale";
-			*/
-			if(docType.getValue().equals("MIN_DECREE") || docType.getValue().equals("INTERMIN_DECREE")) { urnType = "decreto"; urnAuth = "ministero."; }
 			if(docType.getValue().equals("MIN_ORDER") || docType.getValue().equals("INTERMIN_ORDER")) { urnType = "ordinanza"; urnAuth = "ministero."; }
 			if(docType.getValue().equals("MIN_REGULATION") || docType.getValue().equals("INTERMIN_REGULATION")) { urnType = "regolamento"; urnAuth = "ministero."; }
 			if(docType.getValue().equals("MIN_CIRCULAR") || docType.getValue().equals("INTERMIN_CIRCULAR")) { urnType = "circolare"; urnAuth = "ministero."; }
 			
-			
+			/*
 			if(docType.getValue().equals("DETERMINA")) urnType = "determina";
 			if(docType.getValue().equals("DELIBERA")) urnType = "delibera";
 			if(docType.getValue().equals("DETERMINA_INTERCOM")) { urnType = "determina"; urnAuth = "commissione."; }
 			if(docType.getValue().equals("DELIBERA_INTERCOM")) { urnType = "delibera"; urnAuth = "commissione."; }
 			
 			if(docType.getValue().equals("DECREE_DIRIGENZIALE")) urnType = "decreto";
+			*/
+		}
+		
+		if(Linkoln.STRICT && urnType.equals("")) {
 			
+			return null;
 		}
 		
 		if(legAuth != null) { // && urnAuth.equals("")) { <-- "decreto" può avere una specifica authority 
@@ -166,14 +197,13 @@ public class UrnIdentifierGeneration implements IdentifierGeneration {
 				
 				urnAuth = legAuth.getValue().toLowerCase().replaceAll("_", ".");
 			}
-
 		}
 		
 		if(number != null) {
 			
 			urnNumber = Util.readFirstNumber(number.getValue());
 			
-			year = number.getRelatedEntity("YEAR");
+			//year = number.getRelatedEntity("YEAR");
 		}
 		
 		if(date != null) {
@@ -187,46 +217,13 @@ public class UrnIdentifierGeneration implements IdentifierGeneration {
 			urnDate = year.getValue();
 		}
 		
-		if(partition != null) {
+		//Non produrre un identificatore Urn Nir se manca l'anno o il numero
+		if(urnDate.equals("") || urnNumber.equals("")) {
 			
-			/*
-			AnnotationEntity article = partition.getRelatedEntity("ARTICLE");
-			AnnotationEntity comma = partition.getRelatedEntity("COMMA");
-			AnnotationEntity paragraph = partition.getRelatedEntity("PARAGRAPH");
-			AnnotationEntity letter = partition.getRelatedEntity("LETTER");
-			AnnotationEntity item = partition.getRelatedEntity("ITEM");
-			
-			if(article != null) urnPartition += article.getValue().toLowerCase();
-			if(comma != null) urnPartition += comma.getValue().toLowerCase();
-			if(paragraph != null) urnPartition += paragraph.getValue().toLowerCase();
-			if(letter != null) urnPartition += letter.getValue().toLowerCase();
-			if(item != null) urnPartition += item.getValue().toLowerCase();
-			*/
-			
-			urnPartition = partition.getValue().toLowerCase();
-			
-			urnPartition = urnPartition.replaceAll("-", "");
-			urnPartition = urnPartition.replaceAll("_", "-");
-			urnPartition = urnPartition.replaceAll("item", "num");
-			
-			if( !urnPartition.equals("")) {
-				
-				urnPartition = "~" + urnPartition;
-			}
+			return null;
 		}
-		
-		if(docUrn.equals("")) {
-		
-			//Non produrre un identificatore Urn Nir se manca l'anno o il numero
-			if(urnDate.equals("") || urnNumber.equals("")) {
-				
-				return null;
-			}
 			
-			docUrn = urnAuth + ":" + urnType + ":" + urnDate + ";" + urnNumber;
-		}
-		
-		urnNir += docUrn + urnPartition;
+		urnNir += urnAuth + ":" + urnType + ":" + urnDate + ";" + urnNumber + urnPartition; 
 		
 		linkolnIdentifier.setCode(urnNir);
 		linkolnIdentifier.setUrl(urlPrefix + urnNir);
@@ -238,15 +235,11 @@ public class UrnIdentifierGeneration implements IdentifierGeneration {
 		
 		if(alias.getValue().equals("IT_COST")) return "stato:costituzione:1947-12-27";
 		
-		//if(alias.getValue().equals("IT_COD_CIV")) return "stato:codice.civile:1942-03-16;262";
 		if(alias.getValue().equals("IT_COD_CIV")) return "stato:regio.decreto:1942-03-16;262:2";
-		//if(alias.getValue().equals("IT_COD_PEN")) return "stato:codice.penale:1930-10-19;1398";
 		if(alias.getValue().equals("IT_COD_PEN")) return "stato:regio.decreto:1930-10-19;1398:1";
-		//if(alias.getValue().equals("IT_COD_PROC_CIV")) return "stato:codice.procedura.civile:1940-10-28;1443";
-		if(alias.getValue().equals("IT_COD_PROC_CIV")) return "stato:regio.decreto:1940-10-28;1443";  // <--- a questo indirizzo non funzionano le partizioni
-		//if(alias.getValue().equals("IT_COD_PROC_PEN")) return "presidente.repubblica:codice.procedura.penale:1988-09-22;447";
+		if(alias.getValue().equals("IT_COD_PROC_CIV")) return "stato:regio.decreto:1940-10-28;1443:1";
 		if(alias.getValue().equals("IT_COD_PROC_PEN")) return "stato:decreto.del.presidente.della.repubblica:1988-09-22;447";
-		
+	
 		/*
 		http://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1941-08-25;1368
 		REGIO DECRETO 18 dicembre 1941, n. 1368
@@ -267,7 +260,14 @@ public class UrnIdentifierGeneration implements IdentifierGeneration {
 		note:
 		Entrata in vigore del decreto: 24/10/1989
 		 */
-		if(alias.getValue().equals("IT_DISP_ATT_COD_PROC_CIV")) return "stato:regio.decreto:1942-03-30;318"; //R.D. 30 marzo 1942, n.318 //stato:regio.decreto:1941-08-25;1368
+		
+		
+		
+		//TODO disp.att. CODICE CIVILE - a quale deve puntare? ce ne sono due: R.D. 30 marzo 1942, n.318 oppure R.D. 18 dicembre 1941 n. 1368 ???
+		if(alias.getValue().equals("IT_DISP_ATT_COD_CIV")) return "stato:regio.decreto:1942-03-30;318";
+		//if(alias.getValue().equals("IT_DISP_ATT_COD_CIV")) return "stato:regio.decreto:1941-12-18;1368:1";
+		
+		if(alias.getValue().equals("IT_DISP_ATT_COD_PROC_CIV")) return "stato:regio.decreto:1941-08-25;1368:1"; //stato:regio.decreto:1941-08-25;1368
 		if(alias.getValue().equals("IT_DISP_ATT_COD_PROC_PEN")) return "stato:decreto.legislativo:1989-07-28;271"; //D.lgs. 28 luglio 1989 n.271 //stato:decreto.legislativo:1989-07-28;271
 		
 		/*
@@ -387,7 +387,7 @@ public class UrnIdentifierGeneration implements IdentifierGeneration {
 		if(alias.getValue().equals("IT_TU_ESPR_PU")) return "presidente.repubblica:decreto:2001-06-08;327";
 		if(alias.getValue().equals("IT_TU_EDIL")) return "presidente.repubblica:decreto:2001-06-06;380";
 		if(alias.getValue().equals("IT_TU_CIRC_EU")) return "presidente.repubblica:decreto:2002-01-18;54";
-		if(alias.getValue().equals("IT_SPESE_GIUST")) return "presidente.repubblica:decreto:2002-05-30;115";
+		if(alias.getValue().equals("IT_TU_SPESE_GIUST")) return "presidente.repubblica:decreto:2002-05-30;115";
 		if(alias.getValue().equals("IT_TU_CASELL_GIUDIZ")) return "presidente.repubblica:decreto:2002-11-14;313";
 		if(alias.getValue().equals("IT_TU_DEB_PUBBL")) return "presidente.repubblica:decreto:2003-12-30;398";
 		if(alias.getValue().equals("IT_TU_ORD_MIL")) return "presidente.repubblica:decreto:2010-03-15;90";
@@ -402,7 +402,11 @@ public class UrnIdentifierGeneration implements IdentifierGeneration {
 		if(alias.getValue().equals("IT_TU_IMP_REDDITO")) return "presidente.repubblica:decreto:1986-12-22;917";
 		if(alias.getValue().equals("IT_TU_SEQUESTRO")) return "presidente.repubblica:decreto:1950-01-05;180";
 		if(alias.getValue().equals("IT_TU_IMPIEGATI")) return "presidente.repubblica:decreto:1957-03-30;3";
-		if(alias.getValue().equals("IT_TU_BANCARIO")) return "stato:decreto_legislativo:1993-09-01;385";
+		if(alias.getValue().equals("IT_TU_BANCARIO")) return "stato:decreto.legislativo:1993-09-01;385";
+		if(alias.getValue().equals("IT_TU_FINANZE")) return "stato:decreto.legislativo:1998;058";
+		if(alias.getValue().equals("IT_TU_STUPEFACENTI")) return "presidente.repubblica:decreto:1990-10-09;309";
+		if(alias.getValue().equals("IT_TU_ENTI_LOCALI")) return "stato:decreto.legislativo:2000-08-18;267";
+		
 		
 		
 /*

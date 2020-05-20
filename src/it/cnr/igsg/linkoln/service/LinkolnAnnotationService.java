@@ -29,7 +29,7 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 	
 	protected String output = "";
 	
-	private StringBuilder after = null;
+	private StringBuilder after = new StringBuilder();
 	
 	public String getInput() {
 		
@@ -41,8 +41,23 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 		return output;
 	}
 	
+	private String error = "";
+	
+	public String getError() {
+		
+		return this.error;
+	}
+	
 	@Override
 	protected final void beforeRun() {
+		
+		position = 0;
+		annotationEntity = null;
+		output = "";
+		after = new StringBuilder();
+		offset = 0;
+		length = 0;
+		text = "";
 		
 		//Add blanks at the beginning and the the end of the input for edge parsing 
 		
@@ -54,8 +69,6 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 			
 			input =  " " + getLinkolnDocument().getAnnotatedText() + " ";
 		}
-		
-		after = new StringBuilder();
 	}
 
 	@Override
@@ -75,20 +88,32 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 			String cleanAfter = Util.removeAllAnnotations(output);
 	
 			if( !cleanBefore.equals(cleanAfter)) {
+			
+				String equalPart = Util.getEqualPart(cleanBefore, cleanAfter);
+
+				if(Linkoln.DEBUG) {
+					
+					System.err.println(this.getDescription() + " - Annotation service error: before and after text don't match!");
+					System.err.println("BEFORE:" + input);
+					System.err.println("AFTER: " + output);
+					System.err.println("CLEANBEFORE:" + cleanBefore);
+					System.err.println("CLEANAFTER: " + cleanAfter);
+					System.err.println("EQUALPART: " + equalPart);
+				}
 				
-				System.err.println(this.getDescription() + " - Annotation service error: before and after text don't match!");
-				System.err.println("BEFORE:" + input);
-				System.err.println("AFTER: " + output);
-				System.err.println("CLEANBEFORE:" + cleanBefore);
-				System.err.println("CLEANAFTER: " + cleanAfter);
-				System.err.println("EQUALPART: " + Util.getEqualPart(cleanBefore, cleanAfter));
+				if(equalPart.length() > 129) {
+					
+					equalPart = equalPart.substring(equalPart.length() - 128);
+				}
 				
+				this.error = equalPart;
+
 				if(Linkoln.FORCE_EXIT_AFTER_SERVICE_FAILURE) {
 				
 					error = true;
 				}
 			}
-
+			
 			//TODO check after the run that there are no nested annotations
 			
 			//TODO check after the run that there are no unbalanced annotations
@@ -112,6 +137,10 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 		if(this instanceof FinalizeAnnotations) {
 			
 			getLinkolnDocument().setFinalAnnotationsText(output);
+			
+			//getLinkolnDocument().resetEntities();
+			
+			getLinkolnDocument().setTestoNonAnnotato(((FinalizeAnnotations) this).getTestoNonAnnotato());
 		}
 		
 		if(this instanceof LinkolnRenderingService) {
@@ -220,6 +249,11 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 	
 	protected final void annotate(AnnotationEntity newEntity, String value, boolean leftEdge, boolean rightEdge) {
 		
+		annotate(newEntity, value, leftEdge, rightEdge, null);
+	}
+	
+	protected final void annotate(AnnotationEntity newEntity, String value, boolean leftEdge, boolean rightEdge, AnnotationEntity innerEntity) {
+		
 		text = yytext();
 		
 		if(leftEdge) {
@@ -231,7 +265,8 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 	
 		annotationEntity = newEntity;
 		annotationEntity.setPosition(position);
-		annotationEntity.setValue(value.toUpperCase());
+		
+		annotationEntity.setValue(value);
 	
 		if(rightEdge) {
 		
@@ -239,10 +274,24 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 			yypushback(1);
 		}
 
+		text = Util.removeAllAnnotations(text);
+		
+		annotationEntity.setText(text);
+
+		position += text.length();
+
+		/*
 		position += text.length();
 
 		annotationEntity.setText(Util.removeAllAnnotations(text));
+		*/
 		addEntity(annotationEntity);
+		
+		if(innerEntity != null) {
+			
+			annotationEntity.addRelatedEntity(innerEntity);
+			innerEntity.addRelatedEntity(annotationEntity);
+		}
 	}
 
 	protected final AnnotationEntity retrieveEntity(String text) {
@@ -283,8 +332,10 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 	protected void save(AnnotationEntity entity, String value, boolean serialize) {
 		
 		entity.setPosition(position);
-		entity.setValue(value.toUpperCase());
-		entity.setText(Util.removeAllAnnotations(yytext()));
+		entity.setValue(value);
+		
+		String text = Util.removeAllAnnotations(yytext());
+		entity.setText(text);
 
 		if(annotationEntity != null) {
 			
@@ -295,7 +346,7 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 		addEntity(entity, serialize);
 		
 		offset += yylength();
-		position += yylength();	
+		position += text.length();	
 	}
 	
 	protected final void checkEnd() {
@@ -325,6 +376,28 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 		}
 	}
 	
+	/*
+	 * Evita che entità legittime all'interno di uno stato che iniziano sull'edge
+	 * del pattern facciano aumentare offset oltre length. Es.: " 22/11/2018novembre 2015," -> pattern " 22/11/2018n"
+	 */
+	protected final void checkEdge() {
+		
+		//System.out.println("checkLastChar - " + yytext() + " o:" + offset + " l:" + length);
+		
+		if(offset == length) {
+			
+			yypushback(yylength());
+
+			if(annotationEntity != null) {
+				
+				addValue();
+				addEntity(annotationEntity);
+			}
+			
+			yybegin(0);
+		}
+	}
+
 	protected void addValue() {
 		
 	}

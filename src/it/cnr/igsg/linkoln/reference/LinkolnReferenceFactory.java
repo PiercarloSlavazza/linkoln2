@@ -17,6 +17,7 @@ package it.cnr.igsg.linkoln.reference;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import it.cnr.igsg.linkoln.Linkoln;
 import it.cnr.igsg.linkoln.LinkolnDocument;
 import it.cnr.igsg.linkoln.entity.Reference;
 
@@ -47,19 +48,28 @@ public class LinkolnReferenceFactory {
 		if(annotationEntity == null) return null;
 		
 		LinkolnReference linkolnReference = new LinkolnReference(annotationEntity);
-		
-		linkolnDocument.addLinkolnReference(linkolnReference);
+
 		annotationEntity.setLinkolnReference(linkolnReference);
-		
+
 		//Generation of linkoln identifiers
-		
 		initGenerators();
 		
 		for(IdentifierGeneration generator : generators) {
 			
 			linkolnReference.addLinkolnIdentifier(generator.getLinkolnIdentifier(linkolnDocument, annotationEntity));
 		}
-		
+
+		if(Linkoln.STRICT) {
+			
+			//In modalità STRICT-CSM, filtra i reference che non hanno nè identificato nè lkn-auth-name
+			if(linkolnReference.getLinkolnIdentifiers().size() == 0 && linkolnReference.getExtendedAuthorityName() == null) {
+				
+				return null;
+			}
+		}
+
+		linkolnDocument.addLinkolnReference(linkolnReference);
+
 		return linkolnReference;
 	}
 

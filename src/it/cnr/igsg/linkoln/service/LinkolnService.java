@@ -25,8 +25,6 @@ public abstract class LinkolnService implements Comparable<LinkolnService>, Link
 	public LinkolnDocument getLinkolnDocument() {
 		return linkolnDocument;
 	}
-
-
 	
 	private int index = -1; //Relative position in a META-INF/services file
 	
