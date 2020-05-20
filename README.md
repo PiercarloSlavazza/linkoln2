@@ -22,8 +22,11 @@
 *  A collection of all the legal references found in the input;
 *  the original text or document annotated with hypertextual links in correspondence of the identified citations.
 
-#### Download the library
-*  Linkoln v. 2.1.1 is available as a Java library here: [http://dev.igsg.cnr.it/linkoln/linkoln-2.1.1.jar](http://dev.igsg.cnr.it/linkoln/linkoln-2.1.1.jar)
+### Web Demo
+*  Play with Linkoln at: [http://dev.igsg.cnr.it:8080/linkoln](http://dev.igsg.cnr.it:8080/linkoln)
+
+#### Download the binary
+*  Linkoln 2.0 is available as a Java library here: [http://dev.igsg.cnr.it/linkoln/linkoln-2.2.0.jar](http://dev.igsg.cnr.it/linkoln/linkoln-2.2.0.jar)
 
 
 #### Testing the library
