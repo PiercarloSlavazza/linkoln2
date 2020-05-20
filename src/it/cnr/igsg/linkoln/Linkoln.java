@@ -30,7 +30,6 @@ public class Linkoln {
 	public final static String VERSION = "2.2.0";
 	
 	public static boolean DEBUG = false;
-	public static boolean DEBUG_ALL_ANNOTATIONS = false;
 
 	public static boolean HTML_TARGET_BLANK = true;
 	public static boolean HTML_ADD_HEADER = true;
@@ -128,21 +127,6 @@ public class Linkoln {
 					
 					((LinkolnDocument) linkolnDocument).addRenderingService((LinkolnRenderingService) service);
 				}
-			}
-		}
-		
-		if(DEBUG_ALL_ANNOTATIONS) {
-			
-			//Print the annotation history
-			System.out.println("\n\nALL ANNOTATIONS: \n");
-			
-			int count = 1;
-			for(LinkolnAnnotationService service : ((LinkolnDocument) linkolnDocument).getAnnotationServices() ) {
-				
-				System.out.println("\n" + count + ") " + service.getDescription());
-				System.out.println("BEFORE: " + service.getInput());
-				System.out.println("AFTER: " + service.getOutput());
-				count++;
 			}
 		}
 		
