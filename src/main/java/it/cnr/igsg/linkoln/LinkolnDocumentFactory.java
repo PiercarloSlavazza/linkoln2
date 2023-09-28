@@ -14,6 +14,7 @@
  ******************************************************************************/
 package it.cnr.igsg.linkoln;
 
+@SuppressWarnings("unused")
 public class LinkolnDocumentFactory {
 
 	/*
@@ -21,10 +22,8 @@ public class LinkolnDocumentFactory {
 	 */
 	
 	public static LinkolnDocument createLinkolnDocument() {
-		
-		LinkolnDocument linkolnDocument = new LinkolnDocument();
-		
-		return linkolnDocument;
+
+		return new LinkolnDocument();
 	}
 	
 	public static LinkolnDocument createLinkolnDocument(String identifier) { //TODO LinkolnIdentifier

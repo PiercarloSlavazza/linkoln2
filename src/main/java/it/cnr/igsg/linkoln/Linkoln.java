@@ -120,12 +120,12 @@ public class Linkoln {
 				if(service instanceof LinkolnAnnotationService) {
 					
 					//Update the annotation history
-					((LinkolnDocument) linkolnDocument).addAnnotationService((LinkolnAnnotationService) service);
+					linkolnDocument.addAnnotationService((LinkolnAnnotationService) service);
 				}
 				
 				if(service instanceof LinkolnRenderingService) {
 					
-					((LinkolnDocument) linkolnDocument).addRenderingService((LinkolnRenderingService) service);
+					linkolnDocument.addRenderingService((LinkolnRenderingService) service);
 				}
 			}
 		}
