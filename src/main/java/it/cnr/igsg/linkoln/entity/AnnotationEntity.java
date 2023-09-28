@@ -59,7 +59,7 @@ public abstract class AnnotationEntity {
 		return null;
 	}
 	
-	protected Map<String,AnnotationEntity> name2entity = new HashMap<String,AnnotationEntity>();
+	protected Map<String,AnnotationEntity> name2entity = new HashMap<>();
 	
 	public final void addRelatedEntity(AnnotationEntity annotationEntity) {
 		
@@ -87,19 +87,17 @@ public abstract class AnnotationEntity {
 	public abstract String getEntityName();
 
 	private String getDescription() {
-		
-		String output = "[" + this.getEntityName() + ":" + this.getValue() + ":" + this.getId() + ":" + this.getPosition() + "] \"" + this.getText() + "\"";
 
-		return output;
+		return "[" + this.getEntityName() + ":" + this.getValue() + ":" + this.getId() + ":" + this.getPosition() + "] \"" + this.getText() + "\"";
 	}
 	
 	public final String toString() {
 
-		String related = "";
+		StringBuilder related = new StringBuilder();
 		
 		for(AnnotationEntity relatedEntity : name2entity.values()) {
 			
-			related += " { " + relatedEntity.getDescription() + " }";
+			related.append(" { ").append(relatedEntity.getDescription()).append(" }");
 		}
 		
 		return getDescription() + related; 

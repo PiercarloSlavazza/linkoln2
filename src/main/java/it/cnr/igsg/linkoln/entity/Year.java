@@ -14,6 +14,8 @@
  ******************************************************************************/
 package it.cnr.igsg.linkoln.entity;
 
+import java.time.LocalDate;
+
 public class Year extends AnnotationEntity {
 
 	@Override
@@ -27,9 +29,9 @@ public class Year extends AnnotationEntity {
 
 		if(value.length() == 2) {
 
-			int numValue = Integer.valueOf(value);
+			int numValue = Integer.parseInt(value);
 
-			if(numValue < 21) {
+			if(numValue < LocalDate.now().getYear()) {
 				
 				value = "20" + value;
 				

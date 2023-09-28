@@ -22,6 +22,7 @@ import it.cnr.igsg.linkoln.reference.Cluster;
 import it.cnr.igsg.linkoln.reference.LinkolnReference;
 import it.cnr.igsg.linkoln.service.impl.Util;
 
+@SuppressWarnings("RedundantIfStatement")
 public class Reference extends AnnotationEntity {
 
 	private LinkolnReference linkolnReference = null;
@@ -61,7 +62,7 @@ public class Reference extends AnnotationEntity {
 		this.context = context;
 	}
 	
-	public Map<String,AnnotationEntity> name2sharedEntity = new HashMap<String,AnnotationEntity>();
+	public Map<String,AnnotationEntity> name2sharedEntity = new HashMap<>();
 	
 	
 	public boolean isReference() {
@@ -259,7 +260,7 @@ public class Reference extends AnnotationEntity {
 			
 			if(auth == null) return null;
 			
-			//Look for a detatched auth within the main auth
+			//Look for a detached auth within the main auth
 			auth = auth.getRelatedEntity("CL_DETACHED_SECTION");
 			
 			if(auth == null) {
@@ -317,7 +318,7 @@ public class Reference extends AnnotationEntity {
 	
 	public AnnotationEntity getDetAuth() {
 		
-		//Look only in detatched authority
+		//Look only in detached authority
 		AnnotationEntity auth = this.getRelatedEntity("CL_DETACHED_SECTION");
 		
 		if(auth == null) {

@@ -32,13 +32,14 @@ import it.cnr.igsg.linkoln.service.impl.HtmlCleanCommentsPreProcessing;
 import it.cnr.igsg.linkoln.service.impl.HtmlCleanPreProcessing;
 import it.cnr.igsg.linkoln.service.impl.HtmlPreProcessing;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class LinkolnDocument {
 
 
 	/* TODO Ogni text deve avere associata una lingua. Si possono avere più text in lingue diverse nello stesso linkolnDocument */
 	
 	
-	public Set<String> auths = new HashSet<String>();
+	public Set<String> auths = new HashSet<>();
 	
 	
 	/*
@@ -79,15 +80,15 @@ public class LinkolnDocument {
 		return testoNonAnnotato;
 	}
 	
-	public ArrayList<Object> originalContents = new ArrayList<Object>(); //TODO use ServiceBus / LinkolnPipeline
+	public ArrayList<Object> originalContents = new ArrayList<>(); //TODO use ServiceBus / LinkolnPipeline
 	
-	public Set<Integer> htmlCuts = new HashSet<Integer>();
+	public Set<Integer> htmlCuts = new HashSet<>();
 	
 	public boolean isPlainText = true;
 	
-	private Collection<LinkolnReference> linkolnReferences = new ArrayList<LinkolnReference>();
+	private final Collection<LinkolnReference> linkolnReferences = new ArrayList<>();
 	
-	private ArrayList<Integer> fullStops = new ArrayList<Integer>(); //Si assume che sono aggiunti in ordine di occorrenza nel testo dal servizio apposito
+	private final ArrayList<Integer> fullStops = new ArrayList<>(); //Si assume che sono aggiunti in ordine di occorrenza nel testo dal servizio apposito
 	
 	public void addFullStop(Integer fs) {
 		
@@ -256,7 +257,7 @@ public class LinkolnDocument {
 			
 			if(content instanceof StringBuilder) {
 				
-				plainContents.append(content.toString());
+				plainContents.append(content);
 			}
 		}
 		
@@ -277,9 +278,9 @@ public class LinkolnDocument {
 	
 	private Collection<LinkolnRenderingService> renderingServices = null;
 
-	protected Collection<AnnotationEntity> entities = new ArrayList<AnnotationEntity>();
+	protected Collection<AnnotationEntity> entities = new ArrayList<>();
 	
-	protected Map<String,AnnotationEntity> id2entity = new HashMap<String,AnnotationEntity>();
+	protected Map<String,AnnotationEntity> id2entity = new HashMap<>();
 	
 	protected String getNextId() {
 		
@@ -325,7 +326,7 @@ public class LinkolnDocument {
 	
 	public void resetEntities() {
 		
-		entities = new ArrayList<AnnotationEntity>();
+		entities = new ArrayList<>();
 	}
 	
 	LinkolnDocument() {
@@ -337,13 +338,13 @@ public class LinkolnDocument {
 		
 		//init or reset the legal references collection
 
-		annotationServices = new ArrayList<LinkolnAnnotationService>();
+		annotationServices = new ArrayList<>();
 		
-		renderingServices = new ArrayList<LinkolnRenderingService>();
+		renderingServices = new ArrayList<>();
 		
-		errors = new ArrayList<String>();
+		errors = new ArrayList<>();
 		
-		messages = new ArrayList<String>();
+		messages = new ArrayList<>();
 	}
 	
 	public Collection<LinkolnAnnotationService> getAnnotationServices() {

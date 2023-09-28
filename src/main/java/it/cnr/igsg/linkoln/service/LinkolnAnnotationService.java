@@ -19,6 +19,7 @@ import it.cnr.igsg.linkoln.entity.AnnotationEntity;
 import it.cnr.igsg.linkoln.service.impl.FinalizeAnnotations;
 import it.cnr.igsg.linkoln.service.impl.Util;
 
+@SuppressWarnings("StringOperationCanBeSimplified")
 public abstract class LinkolnAnnotationService extends LinkolnService {
 
 	/*
@@ -181,6 +182,7 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 		}
 	}
 
+	@SuppressWarnings("StringBufferReplaceableByString")
 	private String serializeEntity(AnnotationEntity entity) {
 		
 		//TODO syntax checks
@@ -188,10 +190,10 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 
 		StringBuilder annotation = new StringBuilder();
 
-		annotation.append(OPEN + entity.getEntityName() + SEP + entity.getValue() + SEP + entity.getId() + C);
-		
+		annotation.append(OPEN).append(entity.getEntityName()).append(SEP).append(entity.getValue()).append(SEP).append(entity.getId()).append(C);
+
 		annotation.append(entity.getText());
-		
+
 		annotation.append(CLOSE);
 		
 		return annotation.toString();
@@ -280,11 +282,6 @@ public abstract class LinkolnAnnotationService extends LinkolnService {
 
 		position += text.length();
 
-		/*
-		position += text.length();
-
-		annotationEntity.setText(Util.removeAllAnnotations(text));
-		*/
 		addEntity(annotationEntity);
 		
 		if(innerEntity != null) {
