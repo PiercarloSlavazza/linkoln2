@@ -18,8 +18,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import it.cnr.igsg.linkoln.entity.AnnotationEntity;
 import it.cnr.igsg.linkoln.entity.Reference;
 
+@SuppressWarnings("unused")
 public final class LinkolnReference {
 
 	/*
@@ -42,7 +44,7 @@ public final class LinkolnReference {
 	 * 
 	 */
 	
-	
+	private final AnnotationEntity annotationEntity;
 	
 	private String citation = null;
 
@@ -71,14 +73,9 @@ public final class LinkolnReference {
 	private String letter = null;
 	private String item = null;
 	
-	private Collection<LinkolnIdentifier> linkolnIdentifiers = new ArrayList<LinkolnIdentifier>();
+	private final Collection<LinkolnIdentifier> linkolnIdentifiers = new ArrayList<>();
 
 	
-	LinkolnReference() {
-		
-		//not to be used
-	}
-
 	LinkolnReference(Reference entity) {
 		
 		this.citation = entity.getText();
@@ -107,13 +104,16 @@ public final class LinkolnReference {
 		this.number = entity.getNumberValue();
 		this.year = entity.getYear()!=null?entity.getYear().getValue():null;
 		this.yearNumber = entity.getYearFromNumber()!=null?entity.getYearFromNumber().getValue():null;
-		//this.date = entity.getRelatedValue("DOC_DATE");
-		//this.caseNumber = entity.getRelatedValue("CASENUMBER");
 		this.date = entity.getDate()!=null?entity.getDate().getValue():null;
 		this.caseNumber = entity.getCaseNumber()!=null?entity.getCaseNumber().getValue():null;
 		this.applicant = entity.getApplicantValue();
 		this.defendant = entity.getDefendantValue();
 		this.subject = entity.getSubject()!=null?entity.getSubject().getValue():null;
+		annotationEntity = entity;
+	}
+
+	public AnnotationEntity getAnnotationEntity() {
+		return annotationEntity;
 	}
 
 	void addLinkolnIdentifier(LinkolnIdentifier linkolnIdentifier) {
@@ -532,4 +532,35 @@ public final class LinkolnReference {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		return "LinkolnReference{" +
+				"citation='" + citation + '\'' +
+				", type='" + type + '\'' +
+				", authority='" + authority + '\'' +
+				", authoritySection='" + authoritySection + '\'' +
+				", detachedAuthority='" + detachedAuthority + '\'' +
+				", docType='" + docType + '\'' +
+				", number='" + number + '\'' +
+				", year='" + year + '\'' +
+				", yearNumber='" + yearNumber + '\'' +
+				", date='" + date + '\'' +
+				", caseNumber='" + caseNumber + '\'' +
+				", city='" + city + '\'' +
+				", authCity='" + authCity + '\'' +
+				", detCity='" + detCity + '\'' +
+				", region='" + region + '\'' +
+				", country='" + country + '\'' +
+				", applicant='" + applicant + '\'' +
+				", defendant='" + defendant + '\'' +
+				", subject='" + subject + '\'' +
+				", alias='" + alias + '\'' +
+				", article='" + article + '\'' +
+				", comma='" + comma + '\'' +
+				", paragraph='" + paragraph + '\'' +
+				", letter='" + letter + '\'' +
+				", item='" + item + '\'' +
+				", linkolnIdentifiers=" + linkolnIdentifiers +
+				'}';
+	}
 }
