@@ -31,7 +31,7 @@ public class Year extends AnnotationEntity {
 
 			int numValue = Integer.parseInt(value);
 
-			if(numValue < LocalDate.now().getYear()) {
+			if(numValue < (LocalDate.now().getYear() - 2000)) {
 				
 				value = "20" + value;
 				
