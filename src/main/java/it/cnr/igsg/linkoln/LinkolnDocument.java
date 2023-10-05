@@ -181,8 +181,9 @@ public class LinkolnDocument {
 	public void setText(String text) {
 		
 		this.originalText = text;
+		this.plainText = originalText;
 		
-		htmlPreProcessing();
+		//htmlPreProcessing();
 	}
 	
 	public String getOriginalText() {
@@ -194,7 +195,7 @@ public class LinkolnDocument {
 	private void htmlPreProcessing() {
 		
 		if(originalText.trim().startsWith("<")) { //TODO improve check for html/xml inputs..
-			
+
 			isPlainText = false;
 		}
 		
