@@ -527,6 +527,7 @@ public final class LinkolnReference {
 		if(city.equals("IT_F912")) return "Nocera Inferiore";
 		if(city.equals("IT_G148")) return "Orvieto";
 		if(city.equals("IT_L182")) return "Tivoli";
+		if(city.equals("IT_L722")) return "Velletri";
 		
 		
 		return null;

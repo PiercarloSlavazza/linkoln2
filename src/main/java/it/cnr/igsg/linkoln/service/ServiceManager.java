@@ -42,6 +42,7 @@ import it.cnr.igsg.linkoln.service.impl.it.DocTypes;
 import it.cnr.igsg.linkoln.service.impl.it.ExtendAuthorities;
 import it.cnr.igsg.linkoln.service.impl.it.FullStops;
 import it.cnr.igsg.linkoln.service.impl.it.Geos;
+import it.cnr.igsg.linkoln.service.impl.it.Geos2;
 import it.cnr.igsg.linkoln.service.impl.it.Items;
 import it.cnr.igsg.linkoln.service.impl.it.JointCaseNumbers;
 import it.cnr.igsg.linkoln.service.impl.it.Journals;
@@ -87,8 +88,9 @@ public class ServiceManager {
 		services.add(new Commas());
 		services.add(new Letters()); //Must run before stopwords (lettera a comma 1)
 		
+		services.add(new Geos2());
 		services.add(new Stopwords());
-		
+
 		services.add(new Geos());
 		services.add(new DetachedSections());
 		services.add(new CaseLawAuthorities());
